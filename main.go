@@ -9,5 +9,5 @@ func main() {
 
 	win := createMainWindow(myApp)
 
-	win.ShowAndRun()
+	win.win.ShowAndRun()
 }
