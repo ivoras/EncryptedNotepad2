@@ -18,7 +18,7 @@ type ENWindow struct {
 }
 
 func newMainWindow(app fyne.App) (win ENWindow) {
-	win.win = app.NewWindow(fmt.Sprintf("%s %s", APP_NAME, APP_VERSION))
+	win.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(theme.DocumentIcon(), win.handleNewFile),
@@ -48,6 +48,7 @@ func newMainWindow(app fyne.App) (win ENWindow) {
 	win.win.SetContent(topLayout)
 
 	win.Reset()
+	win.win.CenterOnScreen()
 
 	return
 }
