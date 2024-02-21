@@ -1,5 +1,5 @@
 package main
 
-func handleNewFile() {
+func (win *ENWindow) handleNewFile() {
 
 }

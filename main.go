@@ -7,7 +7,7 @@ import (
 func main() {
 	myApp := app.New()
 
-	win := createMainWindow(myApp)
+	win := newMainWindow(myApp)
 
 	win.win.ShowAndRun()
 }

@@ -1,5 +1,5 @@
 package main
 
-func handleSaveFile() {
+func (win *ENWindow) handleSaveFile() {
 
 }

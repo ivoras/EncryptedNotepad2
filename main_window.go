@@ -17,15 +17,15 @@ type ENWindow struct {
 	entry       *widget.Entry
 }
 
-func createMainWindow(app fyne.App) (win ENWindow) {
+func newMainWindow(app fyne.App) (win ENWindow) {
 	win.win = app.NewWindow(fmt.Sprintf("%s %s", APP_NAME, APP_VERSION))
 
 	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.DocumentIcon(), handleNewFile),
-		widget.NewToolbarAction(theme.FolderOpenIcon(), handleOpenFile),
-		widget.NewToolbarAction(theme.DocumentSaveIcon(), handleSaveFile),
+		widget.NewToolbarAction(theme.DocumentIcon(), win.handleNewFile),
+		widget.NewToolbarAction(theme.FolderOpenIcon(), win.handleOpenFile),
+		widget.NewToolbarAction(theme.DocumentSaveIcon(), win.handleSaveFile),
 		widget.NewToolbarSeparator(),
-		widget.NewToolbarAction(theme.HelpIcon(), handleHelp),
+		widget.NewToolbarAction(theme.HelpIcon(), win.handleHelp),
 	)
 
 	topToolbar := container.NewHBox(toolbar)
@@ -47,5 +47,13 @@ func createMainWindow(app fyne.App) (win ENWindow) {
 	win.win.Resize(fyne.NewSize(800, 600))
 	win.win.SetContent(topLayout)
 
+	win.Reset()
+
 	return
+}
+
+func (win *ENWindow) Reset() {
+	win.statusLabel.SetText("<new document>")
+	win.infoLabel.SetText("000:000")
+	win.entry.SetText("")
 }
