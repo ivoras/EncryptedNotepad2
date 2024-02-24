@@ -11,6 +11,8 @@ import (
 )
 
 type ENWindow struct {
+	fileName    string
+	isChanged   bool
 	win         fyne.Window
 	statusLabel *widget.Label
 	infoLabel   *widget.Label
@@ -40,6 +42,8 @@ func newMainWindow(app fyne.App) (win ENWindow) {
 
 	win.entry = widget.NewMultiLineEntry()
 	win.entry.SetPlaceHolder("Just Because You're Paranoid Doesn't Mean They're Not After You")
+	win.entry.OnCursorChanged = win.OnCursorChanged
+	win.entry.OnChanged = win.OnChanged
 	middleContent := container.NewMax(win.entry)
 
 	topLayout := container.NewBorder(topToolbar, bottomStatus, nil, nil, middleContent)
@@ -50,6 +54,8 @@ func newMainWindow(app fyne.App) (win ENWindow) {
 	win.Reset()
 	win.win.CenterOnScreen()
 
+	win.win.Canvas().Focus(win.entry)
+
 	return
 }
 
@@ -57,4 +63,19 @@ func (win *ENWindow) Reset() {
 	win.statusLabel.SetText("<new document>")
 	win.infoLabel.SetText("000:000")
 	win.entry.SetText("")
+	win.fileName = ""
+	win.isChanged = false
+	win.OnCursorChanged()
+}
+
+func (win *ENWindow) OnCursorChanged() {
+	changeMark := ""
+	if win.isChanged {
+		changeMark = "*"
+	}
+	win.infoLabel.SetText(fmt.Sprintf("%s %03d:%03d", changeMark, win.entry.CursorColumn+1, win.entry.CursorRow+1))
+}
+
+func (win *ENWindow) OnChanged(s string) {
+	win.isChanged = true
 }
