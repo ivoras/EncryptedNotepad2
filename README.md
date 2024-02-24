@@ -2,6 +2,8 @@
 
 This is a spiritual successor to the "Encrypted Notepad" app [previously developed on SourceForge](https://sourceforge.net/projects/enotes/), by the same author. The goal is still the same: "Encrypted Notepad 2" does only one thing, but aims to do it perfectly - a Notepad-like simple text editor where files are saved (and later loaded) encrypted with industrial strength algorithms. No ads, no network connection required, no bloat, just run it. If you know how to use the ancient Notepad app, you know how to use this app.
 
+![Screenshot](screenshot.png)
+
 # Current status
 
 In development. Major features are still missing.
@@ -41,4 +43,4 @@ Maybe - depends if there's a good use case and enough people want it.
 
 ## What is the actual cipher mode of AES-256 used in Encrypted Notepad 2?
 
-When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated by the OpenPGP spec. It is [OCFB-MDC](https://web.archive.org/web/20231230093732/https://articles.59.ca/doku.php?id=pgpfan:mdc).
+When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated by the OpenPGP spec. It is [OCFB-MDC](https://web.archive.org/web/20231230093732/https://articles.59.ca/doku.php?id=pgpfan:mdc). It is quite a bit more sophisticated than a naive ECB of even a CBC approach.
