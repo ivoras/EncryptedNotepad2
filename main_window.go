@@ -13,6 +13,7 @@ import (
 type ENWindow struct {
 	fileName    string
 	isChanged   bool
+	app         fyne.App
 	win         fyne.Window
 	statusLabel *widget.Label
 	infoLabel   *widget.Label
@@ -20,6 +21,7 @@ type ENWindow struct {
 }
 
 func newMainWindow(app fyne.App) (win ENWindow) {
+	win.app = app
 	win.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 
 	toolbar := widget.NewToolbar(

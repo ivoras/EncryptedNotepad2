@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	myApp := app.New()
+	myApp := app.NewWithID("com.encryptednotepad2")
 
 	win := newMainWindow(myApp)
 
