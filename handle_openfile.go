@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
@@ -17,8 +18,12 @@ func (win *ENWindow) handleOpenFile() {
 
 	lastDir := win.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
 	if lastDir != "" {
-		fmt.Println("lastDir:", lastDir)
-		fileLister, _ := storage.ListerForURI(storage.NewFileURI(lastDir))
+		lastDir = strings.TrimPrefix(lastDir, "file://")
+		//fmt.Println("lastDir:", lastDir) // Contains a string like "file://C:/MyDir/ExampleDir"
+		fileLister, err := storage.ListerForURI(storage.NewFileURI(lastDir))
+		if err != nil {
+			fmt.Println(err)
+		}
 		fileOpen.SetLocation(fileLister)
 	}
 
@@ -60,9 +65,11 @@ func (win *ENWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error) {
 	}
 	form.Resize(fyne.NewSize(350, 170))
 	form.Show()
+	time.Sleep(100 * time.Millisecond)
+	win.win.Canvas().Focus(passwordEntry)
 }
 
 func (win *ENWindow) doOpenFile(fileName, password string) {
 	fileName = strings.TrimPrefix(fileName, "file://")
-	fmt.Println("Opening", fileName)
+	//fmt.Println("Opening", fileName)
 }

@@ -31,7 +31,13 @@ go build
 
 # Encryption
 
-The files are encrypted using AES-256 and stored in the PGP/OpenPGP `.asc` format, that is interoperable with any other tool using the same standard.
+The files are encrypted using AES-256 and stored in the PGP/OpenPGP `.asc` format, that is interoperable with any other tool using the same standard. The OpenPGP and general crypto libraries used are:
+
+* [ProtonMail's libraries](https://github.com/ProtonMail)
+* [CloudFlare's circl](https://github.com/cloudflare/circl)
+* [Golang's x/crypto](https://golang.org/x/crypto)
+
+Feel free to inspect `go.mod` for details.
 
 # F.A.Q.
 
@@ -51,4 +57,4 @@ Maybe - depends if there's a good use case and enough people want it.
 
 ## What is the actual cipher mode of AES-256 used in Encrypted Notepad 2?
 
-When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated by the OpenPGP spec. It is [OCFB-MDC](https://web.archive.org/web/20231230093732/https://articles.59.ca/doku.php?id=pgpfan:mdc). It is quite a bit more sophisticated than a naive ECB of even a CBC approach.
+When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated by the OpenPGP spec. It is [OCFB-MDC](https://web.archive.org/web/20231230093732/https://articles.59.ca/doku.php?id=pgpfan:mdc). It is an AEAD mode, providing tamper protection as well as encryption.
