@@ -16,7 +16,7 @@ import (
 //go:embed README.md
 var readmeFile string
 
-func (win *ENWindow) handleHelp() {
+func (ed *EditorWindow) handleHelp() {
 	versionText := widget.NewLabel(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 	versionText.TextStyle.Bold = true
 
@@ -34,6 +34,6 @@ func (win *ENWindow) handleHelp() {
 
 	mainLayout := container.NewBorder(infoLines, nil, nil, nil, readmeEdit)
 
-	dlg := dialog.NewCustom(fmt.Sprintf("About %s", APP_NAME), "Ok", mainLayout, win.win)
+	dlg := dialog.NewCustom(fmt.Sprintf("About %s", APP_NAME), "Ok", mainLayout, ed.win)
 	dlg.Show()
 }

@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type ENWindow struct {
+type EditorWindow struct {
 	fileName    string
 	isChanged   bool
 	app         fyne.App
@@ -20,7 +20,7 @@ type ENWindow struct {
 	entry       *widget.Entry
 }
 
-func newMainWindow(app fyne.App) (win ENWindow) {
+func newMainWindow(app fyne.App) (win EditorWindow) {
 	win.app = app
 	win.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 
@@ -61,23 +61,23 @@ func newMainWindow(app fyne.App) (win ENWindow) {
 	return
 }
 
-func (win *ENWindow) Reset() {
-	win.statusLabel.SetText("<new document>")
-	win.infoLabel.SetText("000:000")
-	win.entry.SetText("")
-	win.fileName = ""
-	win.isChanged = false
-	win.OnCursorChanged()
+func (ed *EditorWindow) Reset() {
+	ed.statusLabel.SetText("<new document>")
+	ed.infoLabel.SetText("000:000")
+	ed.entry.SetText("")
+	ed.fileName = ""
+	ed.isChanged = false
+	ed.OnCursorChanged()
 }
 
-func (win *ENWindow) OnCursorChanged() {
+func (ed *EditorWindow) OnCursorChanged() {
 	changeMark := ""
-	if win.isChanged {
+	if ed.isChanged {
 		changeMark = "*"
 	}
-	win.infoLabel.SetText(fmt.Sprintf("%s %03d:%03d", changeMark, win.entry.CursorColumn+1, win.entry.CursorRow+1))
+	ed.infoLabel.SetText(fmt.Sprintf("%s %03d:%03d", changeMark, ed.entry.CursorColumn+1, ed.entry.CursorRow+1))
 }
 
-func (win *ENWindow) OnChanged(s string) {
-	win.isChanged = true
+func (ed *EditorWindow) OnChanged(s string) {
+	ed.isChanged = true
 }

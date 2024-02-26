@@ -15,12 +15,12 @@ import (
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 )
 
-func (win *ENWindow) handleOpenFile() {
-	fileOpen := dialog.NewFileOpen(win.handleOpenFileCallback, win.win)
+func (ed *EditorWindow) handleOpenFile() {
+	fileOpen := dialog.NewFileOpen(ed.handleOpenFileCallback, ed.win)
 
 	fileOpen.SetFilter(storage.NewExtensionFileFilter([]string{".asc"}))
 
-	lastDir := win.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
+	lastDir := ed.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
 	if lastDir != "" {
 		fileLister, err := storage.ListerForURI(storage.NewFileURI(lastDir))
 		if err != nil {
@@ -33,7 +33,7 @@ func (win *ENWindow) handleOpenFile() {
 	fileOpen.Show()
 }
 
-func (win *ENWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error) {
+func (ed *EditorWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error) {
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -58,10 +58,10 @@ func (win *ENWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error) {
 			}
 			openURI := frc.URI().String()
 			dir := openURI[0:strings.LastIndex(openURI, "/")]
-			win.app.Preferences().SetString(PREF_LAST_DIR, strings.TrimPrefix(dir, "file://"))
-			win.doOpenFile(openURI, passwordEntry.Text)
+			ed.app.Preferences().SetString(PREF_LAST_DIR, strings.TrimPrefix(dir, "file://"))
+			ed.doOpenFile(openURI, passwordEntry.Text)
 		},
-		win.win,
+		ed.win,
 	)
 	passwordEntry.OnSubmitted = func(s string) {
 		form.Submit()
@@ -69,49 +69,52 @@ func (win *ENWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error) {
 	form.Resize(fyne.NewSize(350, 170))
 	form.Show()
 	time.Sleep(100 * time.Millisecond)
-	win.win.Canvas().Focus(passwordEntry)
+	ed.win.Canvas().Focus(passwordEntry)
 }
 
-func (win *ENWindow) doOpenFile(fileName, password string) {
+func (ed *EditorWindow) doOpenFile(fileName, password string) {
 	fileName = strings.TrimPrefix(fileName, "file://")
 	//fmt.Println("Opening", fileName)
 	f, err := os.Open(fileName)
 	if err != nil {
-		dialog.ShowError(err, win.win)
+		dialog.ShowError(err, ed.win)
 		return
 	}
 	defer f.Close()
 	bytesMsg, err := io.ReadAll(f)
 	if err != nil {
-		dialog.ShowError(err, win.win)
+		dialog.ShowError(err, ed.win)
 		return
 	}
 	pgpMsg, err := crypto.NewPGPMessageFromArmored(string(bytesMsg))
 	if err != nil {
-		dialog.ShowError(err, win.win)
+		dialog.ShowError(err, ed.win)
 		return
 	}
 	msg, err := crypto.DecryptMessageWithPassword(pgpMsg, []byte(password))
 	if err != nil {
-		dialog.ShowError(err, win.win)
+		dialog.ShowError(err, ed.win)
 		return
 	}
 
-	if win.isChanged {
+	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",
 			"There are unsaved changes in the document. Do you wish to save the document?",
 			func(b bool) {
 				if b {
-					win.Reset()
-					win.entry.SetText(msg.GetString())
-					win.statusLabel.SetText(fileName)
+					// TODO: save file
+					ed.Reset()
+					ed.entry.SetText(msg.GetString())
+					ed.fileName = fileName
+					ed.statusLabel.SetText(fileName)
 				}
 			},
-			win.win)
+			ed.win)
 	} else {
-		win.Reset()
-		win.entry.SetText(msg.GetString())
-		win.statusLabel.SetText(fileName)
+		ed.Reset()
+		ed.entry.SetText(msg.GetString())
+		ed.fileName = fileName
+		ed.statusLabel.SetText(fileName)
 	}
 
 }

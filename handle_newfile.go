@@ -2,17 +2,18 @@ package main
 
 import "fyne.io/fyne/v2/dialog"
 
-func (win *ENWindow) handleNewFile() {
-	if win.isChanged {
+func (ed *EditorWindow) handleNewFile() {
+	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",
 			"There are unsaved changes in the document. Do you wish to save the document?",
 			func(b bool) {
 				if b {
-					win.Reset()
+					// TODO: Save file
+					ed.Reset()
 				}
 			},
-			win.win)
+			ed.win)
 	} else {
-		win.Reset()
+		ed.Reset()
 	}
 }
