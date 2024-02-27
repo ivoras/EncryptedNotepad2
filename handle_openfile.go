@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"time"
 
@@ -59,7 +58,7 @@ func (ed *EditorWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error
 			openURI := frc.URI().String()
 			dir := openURI[0:strings.LastIndex(openURI, "/")]
 			ed.app.Preferences().SetString(PREF_LAST_DIR, strings.TrimPrefix(dir, "file://"))
-			ed.doOpenFile(openURI, passwordEntry.Text)
+			ed.doOpenFile(frc, passwordEntry.Text)
 		},
 		ed.win,
 	)
@@ -72,16 +71,9 @@ func (ed *EditorWindow) handleOpenFileCallback(frc fyne.URIReadCloser, err error
 	ed.win.Canvas().Focus(passwordEntry)
 }
 
-func (ed *EditorWindow) doOpenFile(fileName, password string) {
-	fileName = strings.TrimPrefix(fileName, "file://")
-	//fmt.Println("Opening", fileName)
-	f, err := os.Open(fileName)
-	if err != nil {
-		dialog.ShowError(err, ed.win)
-		return
-	}
-	defer f.Close()
-	bytesMsg, err := io.ReadAll(f)
+func (ed *EditorWindow) doOpenFile(frc fyne.URIReadCloser, password string) {
+	defer frc.Close()
+	bytesMsg, err := io.ReadAll(frc)
 	if err != nil {
 		dialog.ShowError(err, ed.win)
 		return
@@ -96,6 +88,7 @@ func (ed *EditorWindow) doOpenFile(fileName, password string) {
 		dialog.ShowError(err, ed.win)
 		return
 	}
+	fileName := frc.URI().String()
 
 	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",

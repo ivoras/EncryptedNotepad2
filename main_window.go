@@ -56,8 +56,6 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.Reset()
 	ed.win.CenterOnScreen()
 
-	ed.win.Canvas().Focus(ed.entry)
-
 	return
 }
 
@@ -67,6 +65,7 @@ func (ed *EditorWindow) Reset() {
 	ed.entry.SetText("")
 	ed.fileName = ""
 	ed.isChanged = false
+	ed.win.Canvas().Focus(ed.entry)
 	ed.OnCursorChanged()
 }
 
