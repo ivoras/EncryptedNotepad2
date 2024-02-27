@@ -17,7 +17,7 @@ import (
 func (ed *EditorWindow) handleOpenFile() {
 	fileOpen := dialog.NewFileOpen(ed.handleOpenFileCallback, ed.win)
 
-	fileOpen.SetFilter(storage.NewExtensionFileFilter([]string{".asc"}))
+	fileOpen.SetFilter(storage.NewExtensionFileFilter(recognizedFileExtensions))
 
 	lastDir := ed.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
 	if lastDir != "" {
@@ -88,18 +88,24 @@ func (ed *EditorWindow) doOpenFile(frc fyne.URIReadCloser, password string) {
 		dialog.ShowError(err, ed.win)
 		return
 	}
-	fileName := frc.URI().String()
+	fileName := strings.TrimPrefix(frc.URI().String(), "file://")
 
 	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",
 			"There are unsaved changes in the document. Do you wish to save the document?",
 			func(b bool) {
 				if b {
-					// TODO: save file
-					ed.Reset()
-					ed.entry.SetText(msg.GetString())
-					ed.fileName = fileName
-					ed.statusLabel.SetText(fileName)
+					fwc, err := storage.Writer(frc.URI())
+					if err != nil {
+						dialog.ShowError(err, ed.win)
+						return
+					}
+					ed.handleSaveFileCallbackGeneric(fwc, nil, func() {
+						ed.Reset()
+						ed.entry.SetText(msg.GetString())
+						ed.fileName = fileName
+						ed.statusLabel.SetText(fileName)
+					})
 				}
 			},
 			ed.win)
