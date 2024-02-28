@@ -15,7 +15,7 @@ dist/windows:
 	mkdir -p dist/windows
 
 dist/windows/EncryptedNotepad2.exe:
-	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc fyne package -os windows -icon Icon.png -release 
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc fyne package -os windows -icon Icon.png -release  && mv EncryptedNotepad2.exe dist/windows/
 
 dist/Icon.png: Icon.png
 	cp Icon.png dist/
