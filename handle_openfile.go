@@ -14,7 +14,7 @@ import (
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 )
 
-func (ed *EditorWindow) handleOpenFile() {
+func (ed *EditorWindow) clickedOpenFile() {
 	fileOpen := dialog.NewFileOpen(ed.handleOpenFileCallback, ed.win)
 
 	fileOpen.SetFilter(storage.NewExtensionFileFilter(recognizedFileExtensions))
@@ -93,27 +93,38 @@ func (ed *EditorWindow) doOpenFile(frc fyne.URIReadCloser, password string) {
 	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",
 			"There are unsaved changes in the document. Do you wish to save the document?",
-			func(b bool) {
-				if b {
-					fwc, err := storage.Writer(frc.URI())
-					if err != nil {
-						dialog.ShowError(err, ed.win)
-						return
+			func(saveFile bool) {
+				if saveFile {
+					if ed.fileName != "" && ed.oldPassword != "" {
+						// Just save the file with the existing filename and password
+						ed.saveWithExistingFileAndPassword()
+						ed.setEditorFile(fileName, msg.GetString())
+						ed.oldPassword = password // new password
+					} else {
+						// Need to ask for filename and password,
+						// then save the old file,
+						// then load the new file data into the editor.
+						fileSave := ed.newSaveFileDialog(func(fwc fyne.URIWriteCloser, err error) {
+							ed.handleSaveFileCallbackGeneric(fwc, err, func() {
+								ed.setEditorFile(fileName, msg.GetString())
+								ed.oldPassword = password
+							})
+						})
+						fileSave.Show()
 					}
-					ed.handleSaveFileCallbackGeneric(fwc, nil, func() {
-						ed.Reset()
-						ed.entry.SetText(msg.GetString())
-						ed.fileName = fileName
-						ed.statusLabel.SetText(fileName)
-					})
 				}
 			},
 			ed.win)
 	} else {
-		ed.Reset()
-		ed.entry.SetText(msg.GetString())
-		ed.fileName = fileName
-		ed.statusLabel.SetText(fileName)
+		ed.setEditorFile(fileName, msg.GetString())
+		ed.oldPassword = password
 	}
 
+}
+
+func (ed *EditorWindow) setEditorFile(fileName, text string) {
+	ed.Reset()
+	ed.entry.SetText(text)
+	ed.fileName = fileName
+	ed.statusLabel.SetText(fileName)
 }

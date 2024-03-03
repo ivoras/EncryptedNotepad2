@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -18,6 +19,7 @@ type EditorWindow struct {
 	statusLabel *widget.Label
 	infoLabel   *widget.Label
 	entry       *widget.Entry
+	oldPassword string
 }
 
 func newMainWindow(app fyne.App) (ed EditorWindow) {
@@ -25,9 +27,9 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 
 	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.DocumentIcon(), ed.handleNewFile),
-		widget.NewToolbarAction(theme.FolderOpenIcon(), ed.handleOpenFile),
-		widget.NewToolbarAction(theme.DocumentSaveIcon(), ed.handleSaveFile),
+		widget.NewToolbarAction(theme.DocumentIcon(), ed.clickedNewFile),
+		widget.NewToolbarAction(theme.FolderOpenIcon(), ed.clickedOpenFile),
+		widget.NewToolbarAction(theme.DocumentSaveIcon(), ed.clickedSaveFile),
 		widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(theme.HelpIcon(), ed.handleHelp),
 	)
@@ -53,6 +55,16 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.win.Resize(fyne.NewSize(800, 600))
 	ed.win.SetContent(topLayout)
 
+	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyN, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		ed.clickedNewFile()
+	})
+	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyS, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		ed.clickedSaveFile()
+	})
+	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyO, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		ed.clickedOpenFile()
+	})
+
 	ed.Reset()
 	ed.win.CenterOnScreen()
 
@@ -64,6 +76,7 @@ func (ed *EditorWindow) Reset() {
 	ed.infoLabel.SetText("000:000")
 	ed.entry.SetText("")
 	ed.fileName = ""
+	ed.oldPassword = ""
 	ed.isChanged = false
 	ed.win.Canvas().Focus(ed.entry)
 	ed.OnCursorChanged()

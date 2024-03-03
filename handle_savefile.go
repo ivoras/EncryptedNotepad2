@@ -30,9 +30,23 @@ func (ed *EditorWindow) newSaveFileDialog(callBack func(fyne.URIWriteCloser, err
 	return
 }
 
-func (ed *EditorWindow) handleSaveFile() {
-	fileSave := ed.newSaveFileDialog(ed.handleSaveFileCallback)
-	fileSave.Show()
+func (ed *EditorWindow) clickedSaveFile() {
+	if ed.oldPassword == "" || ed.fileName == "" {
+		fileSave := ed.newSaveFileDialog(ed.handleSaveFileCallback)
+		fileSave.Show()
+	} else {
+		ed.saveWithExistingFileAndPassword()
+	}
+}
+
+func (ed *EditorWindow) saveWithExistingFileAndPassword() {
+	fwc, err := storage.Writer(storage.NewFileURI(ed.fileName))
+	if err != nil {
+		fmt.Println("Cannot create Writer on", ed.fileName)
+		dialog.ShowError(err, ed.win)
+		return
+	}
+	ed.saveEditorToWriterWithPassword(fwc, ed.oldPassword, nil)
 }
 
 func (ed *EditorWindow) handleSaveFileCallback(fwc fyne.URIWriteCloser, err error) {
@@ -74,7 +88,7 @@ func (ed *EditorWindow) handleSaveFileCallbackGeneric(fwc fyne.URIWriteCloser, e
 			saveURI := fwc.URI().String()
 			dir := saveURI[0:strings.LastIndex(saveURI, "/")]
 			ed.app.Preferences().SetString(PREF_LAST_DIR, strings.TrimPrefix(dir, "file://"))
-			ed.doSaveFile(fwc, passwordEntry1.Text, callback)
+			ed.saveEditorToWriterWithPassword(fwc, passwordEntry1.Text, callback)
 		},
 		ed.win,
 	)
@@ -84,13 +98,13 @@ func (ed *EditorWindow) handleSaveFileCallbackGeneric(fwc fyne.URIWriteCloser, e
 	passwordEntry2.OnSubmitted = func(s string) {
 		form.Submit()
 	}
-	form.Resize(fyne.NewSize(350, 250))
+	form.Resize(fyne.NewSize(350, 210))
 	form.Show()
 	time.Sleep(100 * time.Millisecond)
 	ed.win.Canvas().Focus(passwordEntry1)
 }
 
-func (ed *EditorWindow) doSaveFile(fwc fyne.URIWriteCloser, password string, callBack func()) {
+func (ed *EditorWindow) saveEditorToWriterWithPassword(fwc fyne.URIWriteCloser, password string, callBack func()) {
 	defer fwc.Close()
 
 	pgpMsg, err := crypto.EncryptMessageWithPassword(crypto.NewPlainMessageFromString(ed.entry.Text), []byte(password))
@@ -98,6 +112,7 @@ func (ed *EditorWindow) doSaveFile(fwc fyne.URIWriteCloser, password string, cal
 		dialog.ShowError(err, ed.win)
 		return
 	}
+	ed.oldPassword = password
 
 	aMsg, err := pgpMsg.GetArmored()
 	if err != nil {
@@ -112,6 +127,8 @@ func (ed *EditorWindow) doSaveFile(fwc fyne.URIWriteCloser, password string, cal
 	}
 
 	ed.isChanged = false
+	ed.fileName = strings.TrimPrefix(fwc.URI().String(), "file://")
+	ed.statusLabel.SetText(ed.fileName)
 	ed.OnCursorChanged()
 
 	if callBack != nil {
