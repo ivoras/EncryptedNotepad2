@@ -7,7 +7,6 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -27,11 +26,12 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 
 	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.DocumentIcon(), ed.clickedNewFile),
-		widget.NewToolbarAction(theme.FolderOpenIcon(), ed.clickedOpenFile),
-		widget.NewToolbarAction(theme.DocumentSaveIcon(), ed.clickedSaveFile),
+		widget.NewToolbarAction(iconMap["new"], ed.clickedNewFile),
+		widget.NewToolbarAction(iconMap["open"], ed.clickedOpenFile),
+		widget.NewToolbarAction(iconMap["save"], ed.clickedSaveFile),
+		widget.NewToolbarAction(iconMap["save-as"], ed.clickedSaveFile),
 		widget.NewToolbarSeparator(),
-		widget.NewToolbarAction(theme.HelpIcon(), ed.handleHelp),
+		widget.NewToolbarAction(iconMap["help"], ed.handleHelp),
 	)
 
 	topToolbar := container.NewHBox(toolbar)
