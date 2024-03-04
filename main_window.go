@@ -29,7 +29,7 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 		widget.NewToolbarAction(iconMap["new"], ed.clickedNewFile),
 		widget.NewToolbarAction(iconMap["open"], ed.clickedOpenFile),
 		widget.NewToolbarAction(iconMap["save"], ed.clickedSaveFile),
-		widget.NewToolbarAction(iconMap["save-as"], ed.clickedSaveFile),
+		widget.NewToolbarAction(iconMap["save-as"], ed.clickedSaveFileAs),
 		widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(iconMap["help"], ed.handleHelp),
 	)
