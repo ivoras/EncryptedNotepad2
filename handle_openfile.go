@@ -127,4 +127,6 @@ func (ed *EditorWindow) setEditorFile(fileName, text string) {
 	ed.entry.SetText(text)
 	ed.fileName = fileName
 	ed.statusLabel.SetText(fileName)
+	ed.isChanged = false
+	ed.OnCursorChanged()
 }

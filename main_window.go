@@ -18,7 +18,7 @@ type EditorWindow struct {
 	win         fyne.Window
 	statusLabel *widget.Label
 	infoLabel   *widget.Label
-	entry       *widget.Entry
+	entry       *shortcutableEntry
 	oldPassword string
 }
 
@@ -44,26 +44,28 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 		ed.infoLabel,
 	)
 
-	ed.entry = widget.NewMultiLineEntry()
+	ed.entry = NewMultiLineShortcutableEntry()
 	ed.entry.SetPlaceHolder("Just Because You're Paranoid Doesn't Mean They're Not After You")
 	ed.entry.OnCursorChanged = ed.OnCursorChanged
 	ed.entry.OnChanged = ed.OnChanged
+
+	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyN, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		fmt.Println("clicked Ctrl-N")
+		ed.clickedNewFile()
+	})
+	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyS, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		ed.clickedSaveFile()
+	})
+	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyO, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
+		ed.clickedOpenFile()
+	})
+
 	middleContent := container.NewMax(ed.entry)
 
 	topLayout := container.NewBorder(topToolbar, bottomStatus, nil, nil, middleContent)
 
 	ed.win.Resize(fyne.NewSize(800, 600))
 	ed.win.SetContent(topLayout)
-
-	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyN, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
-		ed.clickedNewFile()
-	})
-	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyS, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
-		ed.clickedSaveFile()
-	})
-	ed.win.Canvas().AddShortcut(&desktop.CustomShortcut{KeyName: fyne.KeyO, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
-		ed.clickedOpenFile()
-	})
 
 	ed.Reset()
 	ed.win.CenterOnScreen()

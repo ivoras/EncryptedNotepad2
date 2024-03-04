@@ -20,6 +20,8 @@ func (ed *EditorWindow) clickedNewFile() {
 						fileSave := ed.newSaveFileDialog(ed.saveFileAndReset)
 						fileSave.Show()
 					}
+				} else {
+					ed.Reset()
 				}
 			},
 			ed.win)

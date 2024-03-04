@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
@@ -100,7 +99,6 @@ func (ed *EditorWindow) handleSaveFileCallbackGeneric(fwc fyne.URIWriteCloser, e
 	}
 	form.Resize(fyne.NewSize(350, 210))
 	form.Show()
-	time.Sleep(100 * time.Millisecond)
 	ed.win.Canvas().Focus(passwordEntry1)
 }
 
