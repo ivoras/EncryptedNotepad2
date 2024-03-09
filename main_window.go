@@ -50,7 +50,6 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.entry.OnChanged = ed.OnChanged
 
 	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyN, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
-		fmt.Println("clicked Ctrl-N")
 		ed.clickedNewFile()
 	})
 	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyS, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
