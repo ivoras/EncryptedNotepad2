@@ -6,7 +6,7 @@ This is a spiritual successor to the "Encrypted Notepad" app [previously develop
 
 # Current status
 
-Alpha version - major features are done (de/encryption's complete), but there's space for improvement, especially in UX.
+Alpha version - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
 
 # Experiment in sustainable Open Source
 
@@ -18,16 +18,27 @@ Encrypted Notepad 2 is my experiment in combining Open Source with a business mo
 
 # Downloading Encrypted Notepad 2
 
-TODO
+[Here is a link where you can buy binaries and priority support for Encrypted Notepad 2](https://payhip.com/b/q9s7S). By buying this product you support its future development, and get this in return:
+
+* Windows, Linux, and Android versions of the software (OS X and iOS will be provided if there's enough interest)
+* Lifetimes of updates for those binaries, for a single payment
+* Priority support for any issues.
+
+This is an open source app developed on GitHub. What you are buying here are the binaries and priority support. If you know how to, you can always build your own binaries from source.
 
 # Building Encrypted Notepad 2
 
-You will need Go 1.22+ installed. After cloning the repo, just run:
+You will need Go 1.22+ installed. After cloning the repo, run:
 
 ```
 go build
 ```
 
+and run:
+
+```
+./EncryptedNotepad2
+```
 
 # Encryption
 
