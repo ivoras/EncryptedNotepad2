@@ -70,6 +70,6 @@ Maybe - depends if there's a good use case and enough people want it.
 
 When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated by the OpenPGP spec. It is [OCFB-MDC](https://web.archive.org/web/20231230093732/https://articles.59.ca/doku.php?id=pgpfan:mdc). It is an AEAD mode, providing tamper protection as well as encryption.
 
-## Why is the UI clunky / stange / not native?
+## Why is the UI clunky / strange / not native?
 
 It's because of Fyne... but it's getting better all the time.
