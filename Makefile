@@ -1,5 +1,7 @@
+VERSION=0.2
+BUILDNO=3
 
-all: dist dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.apk
+all: dist dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
 	true
 
 dist:
@@ -20,8 +22,8 @@ dist/windows/EncryptedNotepad2.exe: *.go
 dist/android:
 	mkdir -p dist/android
 
-dist/android/EncryptedNotepd2.apk: *.go
-	fyne package -os android -appID com.encryptednotepad2 && mkdir -p dist/android && mv EncryptedNotepad2.apk dist/android/
+dist/android/EncryptedNotepd2.aab: *.go
+	rm -f EncryptedNotepad2.aab ; fyne release -os android/arm64 --appID com.encryptednotepad2 --icon Icon.png --appVersion $(VERSION) --appBuild $(BUILDNO) --keyStore en2.keystore --keyName en2 && mkdir -p dist/android && mv EncryptedNotepad2.aab dist/android/
 
 dist/Icon.png: Icon.png
 	cp Icon.png dist/
