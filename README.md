@@ -6,7 +6,7 @@ This is a spiritual successor to the "Encrypted Notepad" app [previously develop
 
 # Current status
 
-In development. Major features are still missing.
+Alpha version - major features are done (de/encryption's complete), but there's space for improvement, especially in UX.
 
 # Experiment in sustainable Open Source
 
