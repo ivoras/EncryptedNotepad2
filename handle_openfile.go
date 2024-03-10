@@ -92,7 +92,7 @@ func (ed *EditorWindow) doOpenFile(frc fyne.URIReadCloser, password string) {
 
 	if ed.isChanged {
 		dialog.ShowConfirm("Save document?",
-			"There are unsaved changes in the document. Do you wish to save the document?",
+			"There are unsaved changes. Do you wish to save the document?",
 			func(saveFile bool) {
 				if saveFile {
 					if ed.fileName != "" && ed.oldPassword != "" {

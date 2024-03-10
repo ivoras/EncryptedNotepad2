@@ -47,7 +47,7 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	)
 
 	ed.entry = NewMultiLineShortcutableEntry()
-	ed.entry.SetPlaceHolder("Just Because You're Paranoid Doesn't Mean They're Not After You")
+	ed.entry.SetPlaceHolder("Just Because You're Paranoid\nDoesn't Mean They're Not After You")
 	ed.entry.OnCursorChanged = ed.OnCursorChanged
 	ed.entry.OnChanged = ed.OnChanged
 
