@@ -6,19 +6,19 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-//go:embed icons/new.png
+//go:embed icons/new.svg
 var iconNewBytes []byte
 
-//go:embed icons/open.png
+//go:embed icons/open.svg
 var iconOpenBytes []byte
 
-//go:embed icons/save.png
+//go:embed icons/save.svg
 var iconSaveBytes []byte
 
-//go:embed icons/save-as.png
+//go:embed icons/save-as.svg
 var iconSaveAsBytes []byte
 
-//go:embed icons/help.png
+//go:embed icons/help.svg
 var iconHelpBytes []byte
 
 var iconMap map[string]fyne.Resource = map[string]fyne.Resource{

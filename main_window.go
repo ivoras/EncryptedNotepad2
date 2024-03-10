@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/driver/mobile"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
@@ -57,6 +59,12 @@ func newMainWindow(app fyne.App) (ed EditorWindow) {
 	})
 	ed.entry.AddShortcut(desktop.CustomShortcut{KeyName: fyne.KeyO, Modifier: fyne.KeyModifierControl}, func(ks fyne.Shortcut) {
 		ed.clickedOpenFile()
+	})
+
+	ed.win.Canvas().SetOnTypedKey(func(k *fyne.KeyEvent) {
+		if k.Name == mobile.KeyBack {
+			os.Exit(0)
+		}
 	})
 
 	middleContent := container.NewMax(ed.entry)
