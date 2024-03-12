@@ -2,6 +2,8 @@
 
 This is a spiritual successor to the "Encrypted Notepad" app previously developed on SourceForge by the same author. The goal is still the same: *"Encrypted Notepad II" does only one thing, but aims to do it perfectly - a Notepad-like simple text editor where files are saved (and later loaded) encrypted with industrial strength algorithms*. No ads, no network connection required, no bloat, just run it. If you know how to use Windows Notepad app, you know how to use this app.
 
+This app works on old-fashioned files - not internal databases, not proprietary storage, not even SQLite. There's nothing to import or export. Each document is it's own file, saved in the encrypted OpenPGP ASCII-armoured format. That's it.
+
 # Current status
 
 Alpha version 0.2 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.

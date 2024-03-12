@@ -4,6 +4,8 @@ This is a spiritual successor to the "Encrypted Notepad" app [previously develop
 
 ![Screenshot](screenshot.png)
 
+This app works on old-fashioned files - not internal databases, not proprietary storage, not even SQLite. There's nothing to import or export. Each document is it's own file, saved in the encrypted OpenPGP ASCII-armoured format. That's it.
+
 # Current status
 
 Alpha version 0.2 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
