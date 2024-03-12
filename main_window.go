@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/driver/mobile"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -26,6 +27,13 @@ type EditorWindow struct {
 func newMainWindow(app fyne.App) (ed EditorWindow) {
 	ed.app = app
 	ed.win = app.NewWindow(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
+
+	var iconMap map[string]fyne.Resource
+	if app.Settings().ThemeVariant() == theme.VariantLight {
+		iconMap = iconMapLight
+	} else {
+		iconMap = iconMapDark
+	}
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(iconMap["new"], ed.clickedNewFile),

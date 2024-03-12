@@ -20,10 +20,15 @@ func (ed *EditorWindow) handleHelp() {
 	versionText := widget.NewLabel(fmt.Sprintf("%s v%s", APP_NAME, APP_VERSION))
 	versionText.TextStyle.Bold = true
 
+	label1 := widget.NewLabel(fmt.Sprintf("Copyright %d Ivan Voras <ivoras@gmail.com>", time.Now().Year()))
+	label1.Wrapping = fyne.TextWrapBreak
+	label2 := widget.NewLabel("Original source repo: https://github.com/ivoras/EncryptedNotepad2")
+	label2.Wrapping = fyne.TextWrapBreak
+
 	infoLines := container.NewVBox(
 		versionText,
-		widget.NewLabel(fmt.Sprintf("Copyright 2024-%d Ivan Voras <ivoras@gmail.com>", time.Now().Year())),
-		widget.NewLabel(fmt.Sprintf("Original source repo: https://github.com/ivoras/EncryptedNotepad2")),
+		label1,
+		label2,
 	)
 	readmeEdit := fwex.NewEntryEx(10)
 	readmeEdit.SetText(readmeFile)
