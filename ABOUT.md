@@ -2,7 +2,7 @@
 
 This is a spiritual successor to the "Encrypted Notepad" app previously developed on SourceForge by the same author. The goal is still the same: *"Encrypted Notepad II" does only one thing, but aims to do it perfectly - a Notepad-like simple text editor where files are saved (and later loaded) encrypted with industrial strength algorithms*. No ads, no network connection required, no bloat, just run it. If you know how to use Windows Notepad app, you know how to use this app.
 
-This app works on old-fashioned files - not internal databases, not proprietary storage, not even SQLite. There's nothing to import or export. Each document is it's own file, saved in the encrypted OpenPGP ASCII-armoured format. That's it.
+This app works on old-fashioned files - not internal databases, not proprietary storage, not even SQLite. There's nothing to import or export. Each document is its own file, saved in the encrypted OpenPGP ASCII-armoured format. That's it.
 
 # Current status
 
@@ -39,12 +39,6 @@ Feel free to inspect `go.mod` for details.
 
 # F.A.Q.
 
-## Why is the executable / package so big, compared to the old version?
-
-Encrypted Notepad II is written in Go, and that means it's mostly statically compiled on all platforms. It uses the [Fyne](https://github.com/fyne-io/fyne) UI toolkit, and that means it uses almost no operating system-provided UI facilities on any platform. The flip side of that is that everything needs to be built-in into the single executable, making it bigger than expected for such a compact app.
-
-The old version was written in Java, and that means it required a JRE to run. In that light, the new version is actually lighter-weight.
-
 ## Will you support other encryption algorithms?
 
 No. Really, there's no need to. Either you trust AES, and in that case this is what you want, or you don't, in which case you most likely don't need this tool.
@@ -60,3 +54,9 @@ When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated
 ## Why is the UI clunky / strange / not native?
 
 It's because of Fyne... but it's getting better all the time.
+
+## Why is the executable / package so big, compared to the old version?
+
+Encrypted Notepad II is written in Go, and that means it's mostly statically compiled on all platforms. It uses the [Fyne](https://github.com/fyne-io/fyne) UI toolkit, and that means it uses almost no operating system-provided UI facilities on any platform. The flip side of that is that everything needs to be built-in into the single executable, making it bigger than expected for such a compact app.
+
+The old version was written in Java, and that means it required a JRE to run. In that light, the new version is actually lighter-weight.

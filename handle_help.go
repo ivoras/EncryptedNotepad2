@@ -16,10 +16,10 @@ var readmeFile string
 
 func (ed *EditorWindow) handleHelp() {
 
-	label1 := widget.NewLabel(fmt.Sprintf("Copyright %d Ivan Voras <ivoras@gmail.com>", time.Now().Year()))
+	label1 := widget.NewLabel(fmt.Sprintf("(C) %d Ivan Voras <ivoras@gmail.com>", time.Now().Year()))
 	label1.Wrapping = fyne.TextWrapWord
 
-	label2 := widget.NewRichTextFromMarkdown("Original source repo: [https://github.com/ivoras/EncryptedNotepad2](https://github.com/ivoras/EncryptedNotepad2)")
+	label2 := widget.NewRichTextFromMarkdown("Source: [https://github.com/ivoras/EncryptedNotepad2](https://github.com/ivoras/EncryptedNotepad2)")
 	//label2 := widget.NewLabel("Original source repo: https://github.com/ivoras/EncryptedNotepad2")
 	label2.Wrapping = fyne.TextWrapWord
 
@@ -27,14 +27,7 @@ func (ed *EditorWindow) handleHelp() {
 		label1,
 		label2,
 	)
-	/*
-		readmeEdit := fwex.NewEntryEx(10)
-		readmeEdit.SetText(readmeFile)
-		readmeEdit.TextStyle.Monospace = true
-		readmeEdit.SetMinRowsVisible(10)
-		readmeEdit.Wrapping = fyne.TextWrapWord
-		readmeEdit.SetReadOnly(true)
-	*/
+
 	readmeEdit := widget.NewRichTextFromMarkdown(readmeFile)
 	readmeEdit.Wrapping = fyne.TextWrapWord
 	readmeEdit.Scroll = container.ScrollVerticalOnly
