@@ -1,5 +1,5 @@
 VERSION=0.2
-BUILDNO=3
+BUILDNO=4
 
 all: dist dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
 	true
