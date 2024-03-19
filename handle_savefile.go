@@ -42,7 +42,7 @@ func (ed *EditorWindow) saveWithExistingFileAndPassword() {
 	fwc, err := storage.Writer(storage.NewFileURI(ed.fileName))
 	if err != nil {
 		fmt.Println("Cannot create Writer on", ed.fileName)
-		dialog.ShowError(err, ed.win)
+		dialog.ShowError(fmt.Errorf("cannot create storage.Writer on %s: %v", ed.fileName, err), ed.win)
 		return
 	}
 	ed.saveEditorToWriterWithPassword(fwc, ed.oldPassword, nil)
@@ -107,7 +107,7 @@ func (ed *EditorWindow) saveEditorToWriterWithPassword(fwc fyne.URIWriteCloser, 
 
 	pgpMsg, err := crypto.EncryptMessageWithPassword(crypto.NewPlainMessageFromString(ed.entry.Text), []byte(password))
 	if err != nil {
-		dialog.ShowError(err, ed.win)
+		dialog.ShowError(fmt.Errorf("EncryptMessageWithPassword() failed: %v", err), ed.win)
 		return
 	}
 	ed.oldPassword = password
@@ -120,7 +120,7 @@ func (ed *EditorWindow) saveEditorToWriterWithPassword(fwc fyne.URIWriteCloser, 
 
 	_, err = fwc.Write([]byte(aMsg))
 	if err != nil {
-		dialog.ShowError(err, ed.win)
+		dialog.ShowError(fmt.Errorf("Write() failed: %v", err), ed.win)
 		return
 	}
 
