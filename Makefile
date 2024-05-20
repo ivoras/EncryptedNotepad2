@@ -1,7 +1,7 @@
 VERSION=0.3
 BUILDNO=6
 
-all: dist dist/README.html dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
+all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
 	true
 
 clean:
@@ -32,5 +32,8 @@ dist/Icon.png: Icon.png
 	cp Icon.png dist/
 
 dist/README.html: README.md
-	pandoc -f markdown README.md > dist/README.html
+	pandoc --verbose -f markdown -t html5 --standalone --css=pandoc.css --metadata title="" README.md -o dist/README.html
+	cp pandoc.css dist/
 
+dist/screenshot.png: screenshot.png
+	cp screenshot.png dist/
