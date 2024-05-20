@@ -8,7 +8,7 @@ This app works on old-fashioned files - not internal databases, not proprietary 
 
 # Current status
 
-Alpha version 0.2 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
+Alpha version 0.3 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
 
 # Experiment in sustainable Open Source
 

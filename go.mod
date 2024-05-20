@@ -5,7 +5,6 @@ go 1.22
 require (
 	fyne.io/fyne/v2 v2.4.5
 	github.com/ProtonMail/gopenpgp/v2 v2.7.5
-	github.com/matwachich/fynex-widgets v0.0.0-20240210143145-faec7951b806
 )
 
 require (
