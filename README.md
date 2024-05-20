@@ -6,17 +6,17 @@ This is a spiritual successor to the "Encrypted Notepad" app [previously develop
 
 This app works on old-fashioned files - not internal databases, not proprietary storage, not even SQLite. There's nothing to import or export. Each document is its own file, saved in the encrypted OpenPGP ASCII-armoured format. That's it.
 
-# Current status
+# Current Status
 
 Alpha version 0.3 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
 
-# Experiment in sustainable Open Source
+# An Experiment in Sustainable Open Source
 
 *Note from the author*
 
-I am an Open Source veteran. I've put my code out there since before GitHub existed, and you can see my (early and embarrasing) work on SourceForge. All this time, I did it because I made something I want to share with the world, without expecting anything in return. But that isn't really sustainable. Software needs to be maintained. Bitrot is real. Operating systems get updated and move on, and the apps might not even run in a decade. That's what's happened with the original Encrypted Notepad.
+I am an Open Source veteran. I've put my code out there since before GitHub existed, and you can see my (early and embarrasing) work on SourceForge. All this time, I did it because I made something I want to share with the world, without expecting anything in return. But that isn't really sustainable. Software needs to be maintained. Bitrot is real. Operating systems get updated and move on, and once published, apps might not even run in a decade. That's what's happened with the original Encrypted Notepad.
 
-Encrypted Notepad II is my experiment in combining Open Source with a business model. The source code in its entirety is on GitHub, but the binaries are not. If you want to build them yourself, you are welcome to. If Linux distro maintainers want to include it, they are also welcome to. But if you want to download binaries for Windows, OS X, Android, iOS, and even Linux - I'm going to charge for that. Not as a subscription, but as a one-time payment with a lifetime of upgrades.
+Encrypted Notepad II is my experiment in combining Open Source with a business model. The source code in its entirety is on GitHub, but the binaries are not. If you want to build them yourself, you are welcome to. If Linux distro maintainers want to include it, they are also welcome to. But if you want to download binaries for Windows, Android, or even Linux (and possibly MacOS and IOS too) - I'm going to charge for that. Not as a subscription, but as a one-time payment with a lifetime of upgrades.
 
 # Downloading Encrypted Notepad II
 
