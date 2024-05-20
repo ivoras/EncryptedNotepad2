@@ -1,8 +1,11 @@
 VERSION=0.3
 BUILDNO=6
 
-all: dist dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
+all: dist dist/README.html dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
 	true
+
+clean:
+	rm -rf dist
 
 dist:
 	mkdir -p dist
@@ -27,4 +30,7 @@ dist/android/EncryptedNotepd2.aab: *.go
 
 dist/Icon.png: Icon.png
 	cp Icon.png dist/
+
+dist/README.html: README.md
+	pandoc -f markdown README.md > dist/README.html
 
