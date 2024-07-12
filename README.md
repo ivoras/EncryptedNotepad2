@@ -42,6 +42,12 @@ and run:
 ./EncryptedNotepad2
 ```
 
+## Note: Linux dependancies
+
+For Linux builds, you'll also need the following packages installed before building:
+
+* `xorg-dev`
+
 # Encryption
 
 The files are encrypted using AES-256 and stored in the PGP/OpenPGP `.asc` format, that is interoperable with any other tool using the same standard. The OpenPGP and general crypto libraries used are:
