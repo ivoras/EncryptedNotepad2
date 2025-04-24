@@ -18,6 +18,7 @@ func (ed *EditorWindow) clickedOpenFile() {
 	fileOpen := dialog.NewFileOpen(ed.handleOpenFileCallback, ed.win)
 
 	fileOpen.SetFilter(storage.NewExtensionFileFilter(recognizedFileExtensions))
+	fileOpen.SetView(dialog.ListView)
 
 	lastDir := ed.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
 	if lastDir != "" {

@@ -15,6 +15,7 @@ func (ed *EditorWindow) newSaveFileDialog(callBack func(fyne.URIWriteCloser, err
 	fileSave = dialog.NewFileSave(callBack, ed.win)
 
 	fileSave.SetFilter(storage.NewExtensionFileFilter(recognizedFileExtensions))
+	fileSave.SetView(dialog.ListView)
 
 	lastDir := ed.app.Preferences().StringWithFallback(PREF_LAST_DIR, "")
 	if lastDir != "" {
