@@ -6,7 +6,7 @@ This app works on old-fashioned files - not internal databases, not proprietary 
 
 # Current status
 
-Alpha version 0.2 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
+Alpha version 0.3 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
 
 # Experiment in sustainable Open Source
 
@@ -53,7 +53,7 @@ When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated
 
 ## Why is the UI clunky / strange / not native?
 
-It's because of Fyne... but it's getting better all the time.
+It's because of [Fyne](https://github.com/fyne-io/fyne)... but it's getting better all the time.
 
 ## Why is the executable / package so big, compared to the old version?
 
