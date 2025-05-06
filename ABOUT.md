@@ -60,7 +60,6 @@ Encrypted Notepad II is written in Go, and that means it's mostly statically com
 
 The old version was written in Java, and that means it required a JRE to run. In that light, the new version is actually lighter-weight.
 
-
 # Changelog
 
 * v0.4 - If the filename isn't given a file extension while saving, the default ".asc" extension will be used.
