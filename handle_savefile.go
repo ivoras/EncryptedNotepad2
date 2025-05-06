@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -26,7 +28,6 @@ func (ed *EditorWindow) newSaveFileDialog(callBack func(fyne.URIWriteCloser, err
 			fileSave.SetLocation(fileLister)
 		}
 	}
-
 	return
 }
 
@@ -104,7 +105,25 @@ func (ed *EditorWindow) handleSaveFileCallbackGeneric(fwc fyne.URIWriteCloser, e
 }
 
 func (ed *EditorWindow) saveEditorToWriterWithPassword(fwc fyne.URIWriteCloser, password string, callBack func()) {
-	defer fwc.Close()
+	var wc io.WriteCloser
+	var err error
+	fileName := strings.TrimPrefix(fwc.URI().String(), "file://")
+
+	fileNameParts := strings.Split(fileName, "/")
+
+	if !strings.HasSuffix(fileName, ".asc") && strings.IndexByte(fileNameParts[len(fileNameParts)-1], '.') == -1 {
+		fwc.Close()
+		os.Remove(fileName)
+		fileName = fileName + ".asc"
+		wc, err = storage.Writer(storage.NewFileURI(fileName))
+		if err != nil {
+			dialog.ShowError(fmt.Errorf("cannot create file %s: %v", fileName, err), ed.win)
+			return
+		}
+	} else {
+		wc = fwc
+	}
+	defer wc.Close()
 
 	pgpMsg, err := crypto.EncryptMessageWithPassword(crypto.NewPlainMessageFromString(ed.entry.Text), []byte(password))
 	if err != nil {
@@ -119,14 +138,14 @@ func (ed *EditorWindow) saveEditorToWriterWithPassword(fwc fyne.URIWriteCloser, 
 		return
 	}
 
-	_, err = fwc.Write([]byte(aMsg))
+	_, err = wc.Write([]byte(aMsg))
 	if err != nil {
 		dialog.ShowError(fmt.Errorf("Write() failed: %v", err), ed.win)
 		return
 	}
 
 	ed.isChanged = false
-	ed.fileName = strings.TrimPrefix(fwc.URI().String(), "file://")
+	ed.fileName = fileName
 	ed.statusLabel.SetText(ed.fileName)
 	ed.OnCursorChanged()
 

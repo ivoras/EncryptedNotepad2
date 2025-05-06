@@ -6,7 +6,7 @@ This app works on old-fashioned files - not internal databases, not proprietary 
 
 # Current status
 
-Alpha version 0.3 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
+Alpha version 0.4 - major features are done (de/encryption is complete), but there's space for improvement, especially in UX.
 
 # Experiment in sustainable Open Source
 
@@ -17,7 +17,6 @@ I am an Open Source veteran. I've put my code out there since before GitHub exis
 Encrypted Notepad II is my experiment in combining Open Source with a business model. The source code in its entirety is on GitHub, but the binaries are not. If you want to build them yourself, you are welcome to. If Linux distro maintainers want to include it, they are also welcome to. But if you want to download binaries for Windows, OS X, Android, iOS, and even Linux - I'm going to charge for that. Not as a subscription, but as a one-time payment with a lifetime of upgrades.
 
 # Downloading Encrypted Notepad II
-
 
 [Here](https://payhip.com/b/q9s7S) is a link where you can buy binaries and priority support for Encrypted Notepad II. By buying this product you support its future development, and get this in return:
 
