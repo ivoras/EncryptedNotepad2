@@ -1,4 +1,4 @@
-VERSION=0.3
+VERSION=0.4
 BUILDNO=6
 
 all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepd2.aab
