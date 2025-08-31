@@ -58,6 +58,61 @@ The files are encrypted using AES-256 and stored in the PGP/OpenPGP `.asc` forma
 
 Feel free to inspect `go.mod` for details.
 
+# Compatible Tools
+
+## OpenPGP - gpg / pgp
+
+Example to encrypt this readme from command line:
+
+    gpg --pinentry-mode loopback --no-tty --no-verbose --fixed-list-mode --batch --with-colons --symmetric --cipher-algo AES256 --armor --passphrase test README.md
+
+This will create README.md.asc, use `-o-` for stdout.
+
+Alternatively prompt for password by removing `--passphrase`
+
+To decrypt file above (to stdout), or any `*.asc` files from EncryptedNotepad2 issue:
+
+    gpg --pinentry-mode loopback --no-verbose --decrypt --passphrase test  README.md.asc
+    gpg --pinentry-mode loopback --no-verbose --decrypt README.md.asc
+
+
+## OpenKeychain
+
+[OpenKeychain (for Android)](https://github.com/open-keychain/open-keychain)
+
+Mobile options, can encrypt/decrypt files and the clipboard, as well as Share-To Intent.
+
+## GpgFrontend
+
+Cross platform desktop (QT) from [GpgFrontend](https://github.com/saturneric/GpgFrontend/)
+
+## EncryptPad
+
+[EncryptPad](https://github.com/evpo/EncryptPad) Cross platform desktop (QT)
+this is similar to EncryptedNotepad2 but doesn't have mobile support
+
+
+## Puren Tonbo
+
+[Puren Tonbo](https://github.com/clach04/puren_tonbo) is a cross platform
+suite of tools. The main features are grep-like tool(s) for searching
+encrypted files, along with some integrations with text editors
+([Vim](https://www.vim.org/) and [SciTE](https://scintilla.org/SciTE.html))
+and [Git](https://git-scm.com/) for diff'ing encrypted files.
+
+To search plain text files, use standard `grep` or `ptgrep`
+
+    grep cipher *
+    ptgrep cipher .
+
+To search for encrypted and plain text files:
+
+    ptgrep cipher . -e -p test
+    ptgrep cipher . -e
+
+Remove the `-p` flag to manually type in password.
+
+
 # F.A.Q.
 
 ## Will you support other encryption algorithms?
