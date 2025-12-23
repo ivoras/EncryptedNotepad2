@@ -308,6 +308,9 @@ func handleNew() {
 	updateStatusBar()
 }
 
+// PGP message header for detecting encrypted files
+const pgpMessageHeader = "-----BEGIN PGP MESSAGE-----"
+
 func handleOpen() {
 	if app.modified {
 		if !confirmDiscard() {
@@ -316,44 +319,56 @@ func handleOpen() {
 	}
 
 	files := GetOpenFile(
-		Filetypes("{{Encrypted Files} {.asc}} {{All Files} {*}}"),
-		Title("Open Encrypted File"),
+		Filetypes("{{Encrypted Files} {.asc .pgp .gpg}} {{Text Files} {.txt}} {{All Files} {*}}"),
+		Title("Open File"),
 	)
 	if len(files) == 0 || files[0] == "" {
 		return
 	}
 	filename := files[0]
 
-	// Read the encrypted file
+	// Read the file
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		MessageBox(Icon("error"), Title("Error"), Msg(fmt.Sprintf("Failed to read file: %v", err)))
 		return
 	}
 
-	// Ask for password
-	password := askPassword("Enter Password", "Enter the password to decrypt the file:", false)
-	if len(password) > 1 {
-		if password[len(password)-1] == '\n' {
-			password = password[:len(password)-1]
+	content := string(data)
+
+	// Check if file contains PGP message header
+	if strings.HasPrefix(strings.TrimSpace(content), pgpMessageHeader) {
+		// Encrypted file - ask for password and decrypt
+		password := askPassword("Enter Password", "Enter the password to decrypt the file:", false)
+		if len(password) > 1 {
+			if password[len(password)-1] == '\n' {
+				password = password[:len(password)-1]
+			}
 		}
-	}
-	if password == "" {
-		return
+		if password == "" {
+			return
+		}
+
+		// Decrypt the content
+		plaintext, err := DecryptText(content, password)
+		if err != nil {
+			MessageBox(Icon("error"), Title("Decryption Error"), Msg(fmt.Sprintf("Failed to decrypt file: %v\n\nMake sure you entered the correct password.", err)))
+			return
+		}
+
+		// Set the text
+		app.textWidget.Delete("1.0", "end")
+		app.textWidget.Insert("1.0", plaintext)
+		app.currentFile = filename
+		app.password = password
+	} else {
+		// Plain text file - open directly without decryption
+		app.textWidget.Delete("1.0", "end")
+		app.textWidget.Insert("1.0", content)
+		app.currentFile = filename
+		app.password = "" // No password for plain text files
 	}
 
-	// Decrypt the content
-	plaintext, err := DecryptText(string(data), password)
-	if err != nil {
-		MessageBox(Icon("error"), Title("Decryption Error"), Msg(fmt.Sprintf("Failed to decrypt file: %v\n\nMake sure you entered the correct password.", err)))
-		return
-	}
-
-	// Set the text
-	app.textWidget.Delete("1.0", "end")
-	app.textWidget.Insert("1.0", plaintext)
-	app.currentFile = filename
-	app.password = password
 	app.modified = false
 	updateWindowTitle()
 	updateLeftStatus()
