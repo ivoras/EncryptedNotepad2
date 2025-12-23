@@ -284,14 +284,8 @@ func createStatusBar() {
 	app.leftLabel = statusFrame.TLabel(Txt("Ready"))
 	Grid(app.leftLabel, Row(0), Column(0), Sticky("w"))
 
-	// Center - Find edit box
-	findFrame := statusFrame.TFrame()
-	Grid(findFrame, Row(0), Column(1))
-
-	findLabel := findFrame.TLabel(Txt("Find:"))
-	Grid(findLabel, Row(0), Column(0), Padx("0 4"))
-
-	app.findEntry = findFrame.TEntry(Width(25), Font("{Segoe UI} 9"), Textvariable(""))
+	// Center - Find edit box with placeholder
+	app.findEntry = statusFrame.TEntry(Width(25), Font("{Segoe UI} 9"), Textvariable(""), Placeholder("Find..."))
 	Grid(app.findEntry, Row(0), Column(1))
 
 	// Bind Enter key to perform search when find entry is focused
