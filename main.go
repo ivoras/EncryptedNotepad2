@@ -263,6 +263,9 @@ func createTextEditor(parent *TFrameWidget) {
 	// Set white background (like input boxes) - configure after creation to override theme
 	app.textWidget.Configure(Background("#ffffff"))
 
+	// Configure a custom "found" tag for search highlighting that remains visible without focus
+	app.textWidget.TagConfigure("found", Background("#ffff00")) // Yellow highlight
+
 	// Connect scrollbars to control text widget scrolling
 	vscroll.Configure(Command(func(e *Event) { e.Yview(app.textWidget) }))
 	app.hscroll.Configure(Command(func(e *Event) { e.Xview(app.textWidget) }))
@@ -305,6 +308,12 @@ func createStatusBar() {
 	GridColumnConfigure(statusFrame, 2, Weight(1))
 }
 
+func clearSearchHighlight() {
+	if app.textWidget != nil {
+		app.textWidget.TagRemove("found", "1.0", "end")
+	}
+}
+
 func setupTextChangeTracking() {
 	// Bind to <<Modified>> virtual event - fires only when text actually changes
 	Bind(app.textWidget, "<<Modified>>", Command(func(e *Event) {
@@ -315,6 +324,8 @@ func setupTextChangeTracking() {
 				updateWindowTitle()
 				updateLeftStatus()
 			}
+			// Clear search highlight when text changes
+			clearSearchHighlight()
 			// Reset the widget's modified flag so the event fires again on next change
 			app.textWidget.SetModified(false)
 		}
@@ -748,18 +759,18 @@ func handleFindNext(fromStart bool) {
 	startIndex := charIndexToTextIndex(content, actualPos)
 	endIndex := charIndexToTextIndex(content, actualPos+len(searchText))
 
-	// Remove any existing selection
-	app.textWidget.TagRemove("sel", "1.0", "end")
+	// Remove any existing search highlight
+	app.textWidget.TagRemove("found", "1.0", "end")
 
-	// Move cursor to the found position and select the text
+	// Move cursor to the found position and highlight the text
 	app.textWidget.MarkSet("insert", startIndex)
-	app.textWidget.TagAdd("sel", startIndex, endIndex)
+	app.textWidget.TagAdd("found", startIndex, endIndex)
 
 	// Make sure the found text is visible
 	app.textWidget.See(startIndex)
 
-	// Focus back to text widget
-	//Focus(app.textWidget)
+	// Keep focus on the find entry so user can continue searching
+	// The "found" tag highlight remains visible without focus
 
 	// Update status bar
 	updateStatusBar()
