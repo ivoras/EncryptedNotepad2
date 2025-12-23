@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Encrypted Notepad 2</string>
+
+    <!-- Editor -->
+    <string name="editor_hint">Start typing…</string>
+    <string name="new_file_name">New file</string>
+    <string name="modified_indicator">●</string>
+    <string name="line_count_format">Line %1$d / %2$d</string>
+
+    <!-- Menu -->
+    <string name="menu_description">Menu</string>
+    <string name="menu_new">New File</string>
+    <string name="menu_open">Open File</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_save_as">Save As…</string>
+    <string name="menu_about">About</string>
+
+    <!-- Dialogs -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+
+    <!-- Password Dialog -->
+    <string name="password_dialog_title">Set Password</string>
+    <string name="enter_password_dialog_title">Enter Password</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="password_too_short">Password is required</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
+    <string name="password_required">Password is required</string>
+    <string name="no_password_set">No password set</string>
+
+    <!-- Unsaved Changes Dialog -->
+    <string name="unsaved_changes_title">Unsaved Changes</string>
+    <string name="unsaved_changes_message">You have unsaved changes. What would you like to do?</string>
+    <string name="exit_without_saving_message">You have unsaved changes. Exit without saving?</string>
+
+    <!-- Messages -->
+    <string name="file_saved">File saved</string>
+    <string name="error_reading_file">Error reading file: %1$s</string>
+    <string name="error_saving_file">Error saving file: %1$s</string>
+    <string name="decryption_failed">Decryption failed. Wrong password?</string>
+
+    <!-- About -->
+    <string name="about_message">Version %1$s\n\nA secure text editor with OpenPGP encryption.\n\nFiles are encrypted using AES-256 and saved in ASCII-armored format (.asc), compatible with GnuPG and other OpenPGP software.</string>
+</resources>
