@@ -33,6 +33,10 @@ func main() {
 	ActivateTheme("azure light")
 	App.Configure(Width("80c"), Height("50c"))
 
+	// Set application icon
+	appIcon := NewPhoto(File("Icon.png"))
+	App.IconPhoto(appIcon)
+
 	// Create toolbar
 	createToolbar()
 
@@ -67,6 +71,9 @@ func main() {
 }
 
 func createToolbar() {
+	// Configure flat toolbar button style (transparent background)
+	StyleConfigure("Toolbutton.TButton", Relief("flat"), Borderwidth(0), Padding("4"))
+
 	// Load icons
 	iconNew := NewPhoto(File("icons/new.svg"))
 	iconOpen := NewPhoto(File("icons/open.svg"))
@@ -86,19 +93,19 @@ func createToolbar() {
 	col := 0
 
 	// === File Section ===
-	newBtn := toolbar.TButton(Image(iconNew), Command(handleNew))
+	newBtn := toolbar.TButton(Image(iconNew), Style("Toolbutton.TButton"), Command(handleNew))
 	Grid(newBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	openBtn := toolbar.TButton(Image(iconOpen), Command(handleOpen))
+	openBtn := toolbar.TButton(Image(iconOpen), Style("Toolbutton.TButton"), Command(handleOpen))
 	Grid(openBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	saveBtn := toolbar.TButton(Image(iconSave), Command(handleSave))
+	saveBtn := toolbar.TButton(Image(iconSave), Style("Toolbutton.TButton"), Command(handleSave))
 	Grid(saveBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	saveAsBtn := toolbar.TButton(Image(iconSaveAs), Command(handleSaveAs))
+	saveAsBtn := toolbar.TButton(Image(iconSaveAs), Style("Toolbutton.TButton"), Command(handleSaveAs))
 	Grid(saveAsBtn, Row(0), Column(col), Padx("2"))
 	col++
 
@@ -108,19 +115,19 @@ func createToolbar() {
 	col++
 
 	// === Edit Section ===
-	cutBtn := toolbar.TButton(Image(iconCut), Command(handleCut))
+	cutBtn := toolbar.TButton(Image(iconCut), Style("Toolbutton.TButton"), Command(handleCut))
 	Grid(cutBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	copyBtn := toolbar.TButton(Image(iconCopy), Command(handleCopy))
+	copyBtn := toolbar.TButton(Image(iconCopy), Style("Toolbutton.TButton"), Command(handleCopy))
 	Grid(copyBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	pasteBtn := toolbar.TButton(Image(iconPaste), Command(handlePaste))
+	pasteBtn := toolbar.TButton(Image(iconPaste), Style("Toolbutton.TButton"), Command(handlePaste))
 	Grid(pasteBtn, Row(0), Column(col), Padx("2"))
 	col++
 
-	selectAllBtn := toolbar.TButton(Image(iconSelectAll), Command(handleSelectAll))
+	selectAllBtn := toolbar.TButton(Image(iconSelectAll), Style("Toolbutton.TButton"), Command(handleSelectAll))
 	Grid(selectAllBtn, Row(0), Column(col), Padx("2"))
 	col++
 
@@ -130,7 +137,7 @@ func createToolbar() {
 	col++
 
 	// === Help Section ===
-	aboutBtn := toolbar.TButton(Image(iconAbout), Command(handleAbout))
+	aboutBtn := toolbar.TButton(Image(iconAbout), Style("Toolbutton.TButton"), Command(handleAbout))
 	Grid(aboutBtn, Row(0), Column(col), Padx("2"))
 	col++
 
@@ -140,7 +147,7 @@ func createToolbar() {
 	col++
 
 	// Exit button
-	exitBtn := toolbar.TButton(Image(iconExit), Command(handleExit))
+	exitBtn := toolbar.TButton(Image(iconExit), Style("Toolbutton.TButton"), Command(handleExit))
 	Grid(exitBtn, Row(0), Column(col), Padx("2"))
 }
 
@@ -326,6 +333,11 @@ func handleOpen() {
 
 	// Ask for password
 	password := askPassword("Enter Password", "Enter the password to decrypt the file:", false)
+	if len(password) > 1 {
+		if password[len(password)-1] == '\n' {
+			password = password[:len(password)-1]
+		}
+	}
 	if password == "" {
 		return
 	}
