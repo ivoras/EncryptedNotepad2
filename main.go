@@ -492,9 +492,7 @@ func saveFile(filename, password string) {
 	updateLeftStatus()
 }
 
-// Password dialog
-// Note: Using Text widgets instead of TEntry because TEntry doesn't expose a Get method
-// and Variable option doesn't work with TEntry (needs Textvariable)
+// Password dialog using TEntry with Show("*") for password masking
 
 func askPassword(title, message string, confirm bool) string {
 	// Create a toplevel dialog
@@ -514,47 +512,35 @@ func askPassword(title, message string, confirm bool) string {
 	msgLabel := frame.TLabel(Txt(message))
 	Grid(msgLabel, Row(0), Column(0), Columnspan(2), Sticky("w"), Pady("0 10"))
 
-	// Note about password visibility
-	noteLabel := frame.TLabel(Txt("(Password will be visible while typing)"))
-	Grid(noteLabel, Row(1), Column(0), Columnspan(2), Sticky("w"), Pady("0 5"))
-
-	// Password entry using Text widget (single line)
+	// Password entry using TEntry with masking
 	pwdLabel := frame.TLabel(Txt("Password:"))
-	Grid(pwdLabel, Row(2), Column(0), Sticky("e"), Padx("0 10"))
-	passwordText := frame.Text(Width(30), Height(1), Wrap("none"), Font("{Segoe UI} 9"))
-	Grid(passwordText, Row(2), Column(1), Sticky("w"))
+	Grid(pwdLabel, Row(1), Column(0), Sticky("e"), Padx("0 10"))
+	passwordEntry := frame.TEntry(Width(30), Show("*"), Font("{Segoe UI} 9"), Textvariable(""))
+	Grid(passwordEntry, Row(1), Column(1), Sticky("w"))
 
 	// Confirm password entry (if needed)
-	var confirmText *TextWidget
+	var confirmEntry *TEntryWidget
 	if confirm {
 		confirmLabel := frame.TLabel(Txt("Confirm Password:"))
-		Grid(confirmLabel, Row(3), Column(0), Sticky("e"), Padx("0 10"), Pady("5 0"))
-		confirmText = frame.Text(Width(30), Height(1), Wrap("none"), Font("{Segoe UI} 9"))
-		Grid(confirmText, Row(3), Column(1), Sticky("w"), Pady("5 0"))
+		Grid(confirmLabel, Row(2), Column(0), Sticky("e"), Padx("0 10"), Pady("5 0"))
+		confirmEntry = frame.TEntry(Width(30), Show("*"), Font("{Segoe UI} 9"), Textvariable(""))
+		Grid(confirmEntry, Row(2), Column(1), Sticky("w"), Pady("5 0"))
 	}
 
 	// Button frame
 	btnFrame := frame.TFrame()
-	Grid(btnFrame, Row(4), Column(0), Columnspan(2), Pady("15 0"))
+	Grid(btnFrame, Row(3), Column(0), Columnspan(2), Pady("15 0"))
 
 	okPressed := false
 
 	onOK := func() {
-		pwdParts := passwordText.Get("1.0", "end-1c")
-		pwd := ""
-		if len(pwdParts) > 0 {
-			pwd = pwdParts[0]
-		}
+		pwd := passwordEntry.Textvariable()
 		if pwd == "" {
 			MessageBox(Icon("warning"), Title("Warning"), Msg("Password cannot be empty."))
 			return
 		}
-		if confirm && confirmText != nil {
-			confirmParts := confirmText.Get("1.0", "end-1c")
-			confirmPwd := ""
-			if len(confirmParts) > 0 {
-				confirmPwd = confirmParts[0]
-			}
+		if confirm && confirmEntry != nil {
+			confirmPwd := confirmEntry.Textvariable()
 			if pwd != confirmPwd {
 				MessageBox(Icon("warning"), Title("Warning"), Msg("Passwords do not match."))
 				return
@@ -587,7 +573,7 @@ func askPassword(title, message string, confirm bool) string {
 	dialog.Center()
 
 	// Focus the password entry
-	Focus(passwordText)
+	Focus(passwordEntry)
 
 	// Make dialog modal
 	Grab(dialog)
