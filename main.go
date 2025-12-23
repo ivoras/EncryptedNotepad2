@@ -12,7 +12,12 @@ import (
 
 const (
 	AppName    = "Encrypted Notepad 2"
-	AppVersion = "1.0.0"
+	AppVersion = "0.5"
+)
+
+const (
+	pgpMessageHeader = "-----BEGIN PGP MESSAGE-----"
+	statusTextFormat = "Ln %s, Col %s | Lines: %s"
 )
 
 // AppState holds the application state
@@ -80,6 +85,9 @@ func main() {
 func createToolbar() {
 	// Configure flat toolbar button style (transparent background)
 	StyleConfigure("Toolbutton.TButton", Relief("flat"), Borderwidth(0), Padding("4"))
+	// Configure TFrame and TLabel background to match system
+	StyleConfigure("TFrame", Background("SystemButtonFace"))
+	StyleConfigure("TLabel", Background("SystemButtonFace"))
 
 	// Load icons
 	iconNew := NewPhoto(File("icons/new.svg"))
@@ -242,7 +250,7 @@ func createStatusBar() {
 	Grid(app.leftLabel, Row(0), Column(0), Sticky("w"))
 
 	// Right side - line numbers
-	app.statusLabel = statusFrame.TLabel(Txt("Ln 1, Col 1 | Lines: 1"))
+	app.statusLabel = statusFrame.TLabel(Txt(fmt.Sprintf(statusTextFormat, "1", "1", "1")))
 	Grid(app.statusLabel, Row(0), Column(1), Sticky("e"))
 
 	GridColumnConfigure(statusFrame, 0, Weight(1))
@@ -293,7 +301,7 @@ func updateStatusBar() {
 	}
 
 	// Update status label
-	statusText := fmt.Sprintf("Ln %s, Col %s | Lines: %s", line, col, totalLines)
+	statusText := fmt.Sprintf(statusTextFormat, line, col, totalLines)
 	app.statusLabel.Configure(Txt(statusText))
 }
 
@@ -340,13 +348,12 @@ func handleNew() {
 	app.currentFile = ""
 	app.password = ""
 	app.modified = false
+	// Position cursor at line 1, column 1
+	app.textWidget.MarkSet("insert", "1.0")
 	updateWindowTitle()
 	updateLeftStatus()
 	updateStatusBar()
 }
-
-// PGP message header for detecting encrypted files
-const pgpMessageHeader = "-----BEGIN PGP MESSAGE-----"
 
 func handleOpen() {
 	if app.modified {
@@ -407,6 +414,8 @@ func handleOpen() {
 	}
 
 	app.modified = false
+	// Position cursor at line 1, column 1
+	app.textWidget.MarkSet("insert", "1.0")
 	updateWindowTitle()
 	updateLeftStatus()
 	updateStatusBar()
@@ -512,7 +521,7 @@ func askPassword(title, message string, confirm bool) string {
 	// Password entry using Text widget (single line)
 	pwdLabel := frame.TLabel(Txt("Password:"))
 	Grid(pwdLabel, Row(2), Column(0), Sticky("e"), Padx("0 10"))
-	passwordText := frame.Text(Width(30), Height(1), Wrap("none"))
+	passwordText := frame.Text(Width(30), Height(1), Wrap("none"), Font("{Segoe UI} 9"))
 	Grid(passwordText, Row(2), Column(1), Sticky("w"))
 
 	// Confirm password entry (if needed)
@@ -520,7 +529,7 @@ func askPassword(title, message string, confirm bool) string {
 	if confirm {
 		confirmLabel := frame.TLabel(Txt("Confirm Password:"))
 		Grid(confirmLabel, Row(3), Column(0), Sticky("e"), Padx("0 10"), Pady("5 0"))
-		confirmText = frame.Text(Width(30), Height(1), Wrap("none"))
+		confirmText = frame.Text(Width(30), Height(1), Wrap("none"), Font("{Segoe UI} 9"))
 		Grid(confirmText, Row(3), Column(1), Sticky("w"), Pady("5 0"))
 	}
 
