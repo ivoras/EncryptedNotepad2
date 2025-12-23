@@ -106,9 +106,18 @@ func createToolbar() {
 	iconAbout := NewPhoto(File("icons/about.svg"))
 	iconExit := NewPhoto(File("icons/exit.svg"))
 
-	// Create toolbar frame (minimal outer padding, some bottom padding for spacing)
-	toolbar := TFrame(Padding("2 2 2 8"))
-	Grid(toolbar, Row(0), Column(0), Sticky("ew"))
+	// Create outer toolbar container (full width, for centering)
+	toolbarContainer := TFrame(Padding("2 2 2 8"))
+	Grid(toolbarContainer, Row(0), Column(0), Sticky("ew"))
+
+	// Create inner toolbar frame for buttons (will be centered)
+	toolbar := toolbarContainer.TFrame()
+	Grid(toolbar, Row(0), Column(1)) // Column 1 is the center
+
+	// Configure container columns for centering (left and right spacers with equal weight)
+	GridColumnConfigure(toolbarContainer, 0, Weight(1)) // Left spacer
+	GridColumnConfigure(toolbarContainer, 1, Weight(0)) // Center (toolbar)
+	GridColumnConfigure(toolbarContainer, 2, Weight(1)) // Right spacer
 
 	col := 0
 
