@@ -74,8 +74,9 @@ When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated
 
 ## Why is the UI clunky / strange / not native?
 
-The old version was written in Java, and that means it required a JRE to run. In that light, the new version is actually lighter-weight.
+This one isn't new - the old version was written in Java, and that means it required a JRE to run. The current version is written mostly in Go, with TK for the UI. In that light, the new version is actually lighter-weight.
 
 # Changelog
 
+* v0.5 - Rewritten the desktop app with the TK UI, rewritten the Android app to be native
 * v0.4 - If the filename isn't given a file extension while saving, the default ".asc" extension will be used.
