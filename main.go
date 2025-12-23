@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +10,9 @@ import (
 	. "modernc.org/tk9.0"
 	_ "modernc.org/tk9.0/themes/azure"
 )
+
+//go:embed Icon.png
+var appIconData []byte
 
 const (
 	AppName    = "Encrypted Notepad 2"
@@ -40,8 +44,8 @@ func main() {
 	ActivateTheme("azure light")
 	App.Configure(Width("80c"), Height("50c"), Background("SystemButtonFace"))
 
-	// Set application icon
-	appIcon := NewPhoto(File("Icon.png"))
+	// Set application icon (embedded in executable)
+	appIcon := NewPhoto(Data(appIconData))
 	App.IconPhoto(appIcon)
 
 	// Configure default app font (in order of preference)
@@ -52,8 +56,8 @@ func main() {
 	// Create toolbar
 	createToolbar()
 
-	// Create main frame for text editor
-	mainFrame := TFrame(Padding("2"))
+	// Create main frame for text editor (minimal padding, spacing from toolbar handled by toolbar)
+	mainFrame := TFrame(Padding("0"))
 	Grid(mainFrame, Row(1), Column(0), Sticky("nsew"))
 
 	// Create text editor with scrollbar
@@ -102,8 +106,8 @@ func createToolbar() {
 	iconAbout := NewPhoto(File("icons/about.svg"))
 	iconExit := NewPhoto(File("icons/exit.svg"))
 
-	// Create toolbar frame
-	toolbar := TFrame(Padding("4 4 4 4"))
+	// Create toolbar frame (minimal outer padding, some bottom padding for spacing)
+	toolbar := TFrame(Padding("2 2 2 8"))
 	Grid(toolbar, Row(0), Column(0), Sticky("ew"))
 
 	col := 0
@@ -241,7 +245,7 @@ func createTextEditor(parent *TFrameWidget) {
 }
 
 func createStatusBar() {
-	statusFrame := TFrame(Padding("2 2 2 2"))
+	statusFrame := TFrame(Padding("4 2 4 2"))
 
 	Grid(statusFrame, Row(2), Column(0), Sticky("ew"))
 
@@ -648,7 +652,7 @@ Files are encrypted with AES-256 and stored in
 the standard OpenPGP ASCII-armored format (.asc),
 compatible with other OpenPGP tools.
 
-© 2024 - Licensed under open source terms.`, AppName, AppVersion)
+© 2024-2026 Ivan Voras <ivoras@gmail.com> - Licensed under GPLv3 with additional terms.`, AppName, AppVersion)
 
 	MessageBox(
 		Icon("info"),
