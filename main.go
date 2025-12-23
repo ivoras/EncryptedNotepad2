@@ -646,7 +646,7 @@ func handleAbout() {
 	aboutText := fmt.Sprintf(`%s
 Version %s
 
-A secure text editor that encrypts files using OpenPGP.
+A secure text editor that encrypts files using OpenPGP algorithms.
 
 Files are encrypted with AES-256 and stored in
 the standard OpenPGP ASCII-armored format (.asc),
