@@ -1,5 +1,6 @@
 package net.ivoras.encryptednotepad2
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filenameText: TextView
     private lateinit var lineCountText: TextView
     private lateinit var fab: FloatingActionButton
+    private lateinit var settingsManager: SettingsManager
 
     // State
     private var currentFileUri: Uri? = null
@@ -39,16 +41,20 @@ class MainActivity : AppCompatActivity() {
         uri?.let { handleOpenFile(it) }
     }
 
+    // Use StartActivityForResult for dynamic MIME type support
     private val saveAsLauncher = registerForActivityResult(
-        ActivityResultContracts.CreateDocument("application/pgp-encrypted")
-    ) { uri ->
-        uri?.let { handleSaveAs(it) }
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { handleSaveAs(it) }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        settingsManager = SettingsManager(this)
         initViews()
         setupEditor()
         setupFab()
@@ -119,6 +125,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.action_save_as -> {
                     saveFileAs()
+                    true
+                }
+                R.id.action_settings -> {
+                    SettingsDialog.show(this, settingsManager)
                     true
                 }
                 R.id.action_about -> {
@@ -290,7 +300,20 @@ class MainActivity : AppCompatActivity() {
                     "document.asc"
                 }
 
-                saveAsLauncher.launch(suggestedName)
+                // Create intent with dynamic MIME type based on settings
+                val mimeType = if (settingsManager.usePgpEncryptedMime) {
+                    "application/pgp-encrypted"
+                } else {
+                    "*/*"
+                }
+
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = mimeType
+                    putExtra(Intent.EXTRA_TITLE, suggestedName)
+                }
+
+                saveAsLauncher.launch(intent)
             }
         }
     }

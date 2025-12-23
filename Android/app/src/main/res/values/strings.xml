@@ -14,8 +14,10 @@
     <string name="menu_save">Save</string>
     <string name="menu_save_as">Save As…</string>
     <string name="menu_about">About</string>
+    <string name="menu_settings">Settings</string>
 
     <!-- Dialogs -->
+    <string name="close">Close</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -44,4 +46,9 @@
 
     <!-- About -->
     <string name="about_message">Version %1$s\n\nA secure text editor with OpenPGP encryption.\n\nFiles are encrypted using AES-256 and saved in ASCII-armored format (.asc), compatible with GnuPG and other OpenPGP software.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_pgp_mime">Save with pgp-encrypted MIME</string>
+    <string name="settings_pgp_mime_description">Use application/pgp-encrypted MIME type when saving files. Disable for broader file manager compatibility.</string>
 </resources>
