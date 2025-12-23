@@ -33,12 +33,12 @@ func main() {
 	ActivateTheme("azure light")
 	App.Configure(Width("80c"), Height("50c"))
 
-	// Create menu bar
-	createMenuBar()
+	// Create toolbar
+	createToolbar()
 
-	// Create main frame
+	// Create main frame for text editor
 	mainFrame := TFrame(Padding("2"))
-	Grid(mainFrame, Row(0), Column(0), Sticky("nsew"))
+	Grid(mainFrame, Row(1), Column(0), Sticky("nsew"))
 
 	// Create text editor with scrollbar
 	createTextEditor(mainFrame)
@@ -48,7 +48,11 @@ func main() {
 
 	// Configure grid weights for resizing
 	GridColumnConfigure(App, 0, Weight(1))
-	GridRowConfigure(App, 0, Weight(1))
+	GridRowConfigure(App, 0, Weight(0)) // Toolbar row - fixed height
+	GridRowConfigure(App, 1, Weight(1)) // Editor row - expands
+
+	// Set up keyboard bindings
+	setupKeyboardBindings()
 
 	// Set up text change tracking
 	setupTextChangeTracking()
@@ -62,37 +66,86 @@ func main() {
 	App.Wait()
 }
 
-func createMenuBar() {
-	menubar := Menu()
+func createToolbar() {
+	// Load icons
+	iconNew := NewPhoto(File("icons/new.svg"))
+	iconOpen := NewPhoto(File("icons/open.svg"))
+	iconSave := NewPhoto(File("icons/save.svg"))
+	iconSaveAs := NewPhoto(File("icons/save-as.svg"))
+	iconCut := NewPhoto(File("icons/cut.svg"))
+	iconCopy := NewPhoto(File("icons/copy.svg"))
+	iconPaste := NewPhoto(File("icons/paste.svg"))
+	iconSelectAll := NewPhoto(File("icons/select-all.svg"))
+	iconAbout := NewPhoto(File("icons/about.svg"))
+	iconExit := NewPhoto(File("icons/exit.svg"))
 
-	// File menu
-	fileMenu := menubar.Menu()
-	fileMenu.AddCommand(Lbl("New"), Underline(0), Accelerator("Ctrl+N"), Command(handleNew))
-	fileMenu.AddCommand(Lbl("Open..."), Underline(0), Accelerator("Ctrl+O"), Command(handleOpen))
-	fileMenu.AddSeparator()
-	fileMenu.AddCommand(Lbl("Save"), Underline(0), Accelerator("Ctrl+S"), Command(handleSave))
-	fileMenu.AddCommand(Lbl("Save As..."), Underline(5), Accelerator("Ctrl+Shift+S"), Command(handleSaveAs))
-	fileMenu.AddSeparator()
-	fileMenu.AddCommand(Lbl("Exit"), Underline(1), Accelerator("Alt+F4"), Command(handleExit))
-	menubar.AddCascade(Lbl("File"), Underline(0), Mnu(fileMenu))
+	// Create toolbar frame
+	toolbar := TFrame(Padding("4 4 4 4"))
+	Grid(toolbar, Row(0), Column(0), Sticky("ew"))
 
-	// Edit menu
-	editMenu := menubar.Menu()
-	editMenu.AddCommand(Lbl("Cut"), Underline(2), Accelerator("Ctrl+X"), Command(handleCut))
-	editMenu.AddCommand(Lbl("Copy"), Underline(0), Accelerator("Ctrl+C"), Command(handleCopy))
-	editMenu.AddCommand(Lbl("Paste"), Underline(0), Accelerator("Ctrl+V"), Command(handlePaste))
-	editMenu.AddSeparator()
-	editMenu.AddCommand(Lbl("Select All"), Underline(7), Accelerator("Ctrl+A"), Command(handleSelectAll))
-	menubar.AddCascade(Lbl("Edit"), Underline(0), Mnu(editMenu))
+	col := 0
 
-	// Help menu
-	helpMenu := menubar.Menu()
-	helpMenu.AddCommand(Lbl("About..."), Underline(0), Command(handleAbout))
-	menubar.AddCascade(Lbl("Help"), Underline(0), Mnu(helpMenu))
+	// === File Section ===
+	newBtn := toolbar.TButton(Image(iconNew), Command(handleNew))
+	Grid(newBtn, Row(0), Column(col), Padx("2"))
+	col++
 
-	App.Configure(Mnu(menubar))
+	openBtn := toolbar.TButton(Image(iconOpen), Command(handleOpen))
+	Grid(openBtn, Row(0), Column(col), Padx("2"))
+	col++
 
-	// Keyboard bindings
+	saveBtn := toolbar.TButton(Image(iconSave), Command(handleSave))
+	Grid(saveBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	saveAsBtn := toolbar.TButton(Image(iconSaveAs), Command(handleSaveAs))
+	Grid(saveAsBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	// Separator
+	sep1 := toolbar.TSeparator(Orient("vertical"))
+	Grid(sep1, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
+	col++
+
+	// === Edit Section ===
+	cutBtn := toolbar.TButton(Image(iconCut), Command(handleCut))
+	Grid(cutBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	copyBtn := toolbar.TButton(Image(iconCopy), Command(handleCopy))
+	Grid(copyBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	pasteBtn := toolbar.TButton(Image(iconPaste), Command(handlePaste))
+	Grid(pasteBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	selectAllBtn := toolbar.TButton(Image(iconSelectAll), Command(handleSelectAll))
+	Grid(selectAllBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	// Separator
+	sep2 := toolbar.TSeparator(Orient("vertical"))
+	Grid(sep2, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
+	col++
+
+	// === Help Section ===
+	aboutBtn := toolbar.TButton(Image(iconAbout), Command(handleAbout))
+	Grid(aboutBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	// Separator before Exit
+	sep3 := toolbar.TSeparator(Orient("vertical"))
+	Grid(sep3, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
+	col++
+
+	// Exit button
+	exitBtn := toolbar.TButton(Image(iconExit), Command(handleExit))
+	Grid(exitBtn, Row(0), Column(col), Padx("2"))
+}
+
+func setupKeyboardBindings() {
+	// Keyboard bindings for common actions
 	Bind(App, "<Control-n>", Command(func(e *Event) { handleNew() }))
 	Bind(App, "<Control-o>", Command(func(e *Event) { handleOpen() }))
 	Bind(App, "<Control-s>", Command(func(e *Event) { handleSave() }))
@@ -138,7 +191,7 @@ func createTextEditor(parent *TFrameWidget) {
 
 func createStatusBar() {
 	statusFrame := TFrame(Padding("2 2 2 2"))
-	Grid(statusFrame, Row(1), Column(0), Sticky("ew"))
+	Grid(statusFrame, Row(2), Column(0), Sticky("ew"))
 
 	// Left side - modified indicator and filename
 	app.leftLabel = statusFrame.TLabel(Txt("Ready"))
