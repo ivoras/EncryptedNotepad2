@@ -36,7 +36,7 @@ var app AppState
 
 func main() {
 	// Set window title and size
-	App.WmTitle(AppName)
+	App.WmTitle(fmt.Sprintf("%s v%s", AppName, AppVersion))
 	ActivateTheme("azure light")
 	App.Configure(Width("80c"), Height("50c"), Background("SystemButtonFace"))
 
