@@ -11,6 +11,7 @@ func EncryptText(plaintext, password string) (string, error) {
 
 	encHandle, err := pgp.Encryption().
 		Password([]byte(password)).
+		Compress().
 		New()
 	if err != nil {
 		return "", err

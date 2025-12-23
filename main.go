@@ -262,13 +262,22 @@ func createStatusBar() {
 }
 
 func setupTextChangeTracking() {
-	// Bind to key release events to track modifications and update status
-	Bind(app.textWidget, "<KeyRelease>", Command(func(e *Event) {
-		if !app.modified {
-			app.modified = true
-			updateWindowTitle()
-			updateLeftStatus()
+	// Bind to <<Modified>> virtual event - fires only when text actually changes
+	Bind(app.textWidget, "<<Modified>>", Command(func(e *Event) {
+		// Check if the widget's modified flag is set
+		if app.textWidget.Modified() {
+			if !app.modified {
+				app.modified = true
+				updateWindowTitle()
+				updateLeftStatus()
+			}
+			// Reset the widget's modified flag so the event fires again on next change
+			app.textWidget.SetModified(false)
 		}
+	}))
+
+	// Bind to key release for updating cursor position in status bar
+	Bind(app.textWidget, "<KeyRelease>", Command(func(e *Event) {
 		updateStatusBar()
 	}))
 
@@ -352,6 +361,7 @@ func handleNew() {
 	app.currentFile = ""
 	app.password = ""
 	app.modified = false
+	app.textWidget.SetModified(false) // Reset widget's internal modified state
 	// Position cursor at line 1, column 1
 	app.textWidget.MarkSet("insert", "1.0")
 	updateWindowTitle()
@@ -418,6 +428,7 @@ func handleOpen() {
 	}
 
 	app.modified = false
+	app.textWidget.SetModified(false) // Reset widget's internal modified state
 	// Position cursor at line 1, column 1
 	app.textWidget.MarkSet("insert", "1.0")
 	updateWindowTitle()
@@ -492,6 +503,7 @@ func saveFile(filename, password string) {
 	}
 
 	app.modified = false
+	app.textWidget.SetModified(false) // Reset widget's internal modified state
 	updateWindowTitle()
 	updateLeftStatus()
 }
