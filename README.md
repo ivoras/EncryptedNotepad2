@@ -74,15 +74,8 @@ When saving in OpenPGP's message format (the `.asc`) files, the mode is dictated
 
 ## Why is the UI clunky / strange / not native?
 
-It's because of Fyne... but it's getting better all the time.
-
-## Why is the executable / package so big, compared to the old version?
-
-Encrypted Notepad II is written in Go, and that means it's mostly statically compiled on all platforms. It uses the [Fyne](https://github.com/fyne-io/fyne) UI toolkit, and that means it uses almost no operating system-provided UI facilities on any platform. The flip side of that is that everything needs to be built-in into the single executable, making it bigger than expected for such a compact app.
-
 The old version was written in Java, and that means it required a JRE to run. In that light, the new version is actually lighter-weight.
 
 # Changelog
 
 * v0.4 - If the filename isn't given a file extension while saving, the default ".asc" extension will be used.
-
