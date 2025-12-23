@@ -90,7 +90,7 @@ object PgpEncryptionHelper {
      */
     fun isPgpMessage(text: String): Boolean {
         val trimmed = text.trim()
-        return trimmed.startsWith("-----BEGIN PGP MESSAGE-----") &&
+        return trimmed.contains("-----BEGIN PGP MESSAGE-----") &&
                trimmed.contains("-----END PGP MESSAGE-----")
     }
 }
