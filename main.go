@@ -37,6 +37,11 @@ func main() {
 	appIcon := NewPhoto(File("Icon.png"))
 	App.IconPhoto(appIcon)
 
+	// Configure default app font (in order of preference)
+	StyleConfigure(".", Font("{Segoe UI} 9"))
+	StyleConfigure("TButton", Font("{Segoe UI} 9"))
+	StyleConfigure("TLabel", Font("{Segoe UI} 9"))
+
 	// Create toolbar
 	createToolbar()
 
@@ -167,29 +172,33 @@ func createTextEditor(parent *TFrameWidget) {
 	GridColumnConfigure(parent, 0, Weight(1))
 	GridRowConfigure(parent, 0, Weight(1))
 
-	// Create text widget
+	// Create vertical scrollbar
+	vscroll := textFrame.TScrollbar(Orient("vertical"))
+	Grid(vscroll, Row(0), Column(1), Sticky("ns"))
+
+	// Create horizontal scrollbar
+	hscroll := textFrame.TScrollbar(Orient("horizontal"))
+	Grid(hscroll, Row(1), Column(0), Sticky("ew"))
+
+	// Create text widget with white background (like input boxes)
+	// Link scrollbars bidirectionally:
+	// - Yscrollcommand/Xscrollcommand: text widget updates scrollbar position
+	// - Scrollbar Command: scrollbar controls text widget view
 	app.textWidget = textFrame.Text(
 		Wrap("word"),
 		Undo(true),
 		Font("TkFixedFont"),
+		Background("white"),
 		Width(80),
 		Height(25),
+		Yscrollcommand(func(e *Event) { e.ScrollSet(vscroll) }),
+		Xscrollcommand(func(e *Event) { e.ScrollSet(hscroll) }),
 	)
 	Grid(app.textWidget, Row(0), Column(0), Sticky("nsew"))
 
-	// Create vertical scrollbar connected to text widget
-	vscroll := textFrame.TScrollbar(
-		Orient("vertical"),
-		Command(func(e *Event) { e.Yview(app.textWidget) }),
-	)
-	Grid(vscroll, Row(0), Column(1), Sticky("ns"))
-
-	// Create horizontal scrollbar connected to text widget
-	hscroll := textFrame.TScrollbar(
-		Orient("horizontal"),
-		Command(func(e *Event) { e.Xview(app.textWidget) }),
-	)
-	Grid(hscroll, Row(1), Column(0), Sticky("ew"))
+	// Connect scrollbars to control text widget scrolling
+	vscroll.Configure(Command(func(e *Event) { e.Yview(app.textWidget) }))
+	hscroll.Configure(Command(func(e *Event) { e.Xview(app.textWidget) }))
 
 	// Configure grid weights for text frame
 	GridColumnConfigure(textFrame, 0, Weight(1))
