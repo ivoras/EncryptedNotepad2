@@ -34,6 +34,7 @@ type AppState struct {
 	hscroll         *TScrollbarWidget
 	statusLabel     *TLabelWidget
 	leftLabel       *TLabelWidget
+	findEntry       *TEntryWidget
 }
 
 var app AppState
@@ -102,6 +103,7 @@ func createToolbar() {
 	iconCopy := NewPhoto(File("icons/copy.svg"))
 	iconPaste := NewPhoto(File("icons/paste.svg"))
 	iconSelectAll := NewPhoto(File("icons/select-all.svg"))
+	iconFind := NewPhoto(File("icons/search.svg"))
 	iconWordWrap := NewPhoto(File("icons/word-wrap.svg"))
 	iconAbout := NewPhoto(File("icons/about.svg"))
 	iconExit := NewPhoto(File("icons/exit.svg"))
@@ -124,18 +126,22 @@ func createToolbar() {
 	// === File Section ===
 	newBtn := toolbar.TButton(Image(iconNew), Style("Toolbutton.TButton"), Command(handleNew))
 	Grid(newBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(newBtn, "New (Ctrl+N)")
 	col++
 
 	openBtn := toolbar.TButton(Image(iconOpen), Style("Toolbutton.TButton"), Command(handleOpen))
 	Grid(openBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(openBtn, "Open (Ctrl+O)")
 	col++
 
 	saveBtn := toolbar.TButton(Image(iconSave), Style("Toolbutton.TButton"), Command(handleSave))
 	Grid(saveBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(saveBtn, "Save (Ctrl+S)")
 	col++
 
 	saveAsBtn := toolbar.TButton(Image(iconSaveAs), Style("Toolbutton.TButton"), Command(handleSaveAs))
 	Grid(saveAsBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(saveAsBtn, "Save As (Ctrl+Shift+S)")
 	col++
 
 	// Separator
@@ -146,18 +152,27 @@ func createToolbar() {
 	// === Edit Section ===
 	cutBtn := toolbar.TButton(Image(iconCut), Style("Toolbutton.TButton"), Command(handleCut))
 	Grid(cutBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(cutBtn, "Cut (Ctrl+X)")
 	col++
 
 	copyBtn := toolbar.TButton(Image(iconCopy), Style("Toolbutton.TButton"), Command(handleCopy))
 	Grid(copyBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(copyBtn, "Copy (Ctrl+C)")
 	col++
 
 	pasteBtn := toolbar.TButton(Image(iconPaste), Style("Toolbutton.TButton"), Command(handlePaste))
 	Grid(pasteBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(pasteBtn, "Paste (Ctrl+V)")
 	col++
 
 	selectAllBtn := toolbar.TButton(Image(iconSelectAll), Style("Toolbutton.TButton"), Command(handleSelectAll))
 	Grid(selectAllBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(selectAllBtn, "Select All (Ctrl+A)")
+	col++
+
+	findBtn := toolbar.TButton(Image(iconFind), Style("Toolbutton.TButton"), Command(handleFindFocus))
+	Grid(findBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(findBtn, "Find (Ctrl+F)")
 	col++
 
 	// Separator
@@ -180,6 +195,7 @@ func createToolbar() {
 	)
 	wordWrapBtn.WidgetState("selected") // Start selected (word wrap enabled)
 	Grid(wordWrapBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(wordWrapBtn, "Toggle Word Wrap")
 	col++
 
 	// Separator
@@ -190,6 +206,7 @@ func createToolbar() {
 	// === Help Section ===
 	aboutBtn := toolbar.TButton(Image(iconAbout), Style("Toolbutton.TButton"), Command(handleAbout))
 	Grid(aboutBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(aboutBtn, "About")
 	col++
 
 	// Separator before Exit
@@ -200,6 +217,7 @@ func createToolbar() {
 	// Exit button
 	exitBtn := toolbar.TButton(Image(iconExit), Style("Toolbutton.TButton"), Command(handleExit))
 	Grid(exitBtn, Row(0), Column(col), Padx("2"))
+	Tooltip(exitBtn, "Exit (Ctrl+Q)")
 }
 
 func setupKeyboardBindings() {
@@ -208,6 +226,7 @@ func setupKeyboardBindings() {
 	Bind(App, "<Control-o>", Command(func(e *Event) { handleOpen() }))
 	Bind(App, "<Control-s>", Command(func(e *Event) { handleSave() }))
 	Bind(App, "<Control-Shift-S>", Command(func(e *Event) { handleSaveAs() }))
+	Bind(App, "<Control-f>", Command(func(e *Event) { handleFindFocus() }))
 	Bind(App, "<Control-q>", Command(func(e *Event) { handleExit() }))
 }
 
@@ -262,12 +281,28 @@ func createStatusBar() {
 	app.leftLabel = statusFrame.TLabel(Txt("Ready"))
 	Grid(app.leftLabel, Row(0), Column(0), Sticky("w"))
 
+	// Center - Find edit box
+	findFrame := statusFrame.TFrame()
+	Grid(findFrame, Row(0), Column(1))
+
+	findLabel := findFrame.TLabel(Txt("Find:"))
+	Grid(findLabel, Row(0), Column(0), Padx("0 4"))
+
+	app.findEntry = findFrame.TEntry(Width(25), Font("{Segoe UI} 9"), Textvariable(""))
+	Grid(app.findEntry, Row(0), Column(1))
+
+	// Bind Enter key to perform search when find entry is focused
+	Bind(app.findEntry, "<Return>", Command(func(e *Event) {
+		handleFindNext(false)
+	}))
+
 	// Right side - line numbers
 	app.statusLabel = statusFrame.TLabel(Txt(fmt.Sprintf(statusTextFormat, "1", "1", "1")))
-	Grid(app.statusLabel, Row(0), Column(1), Sticky("e"))
+	Grid(app.statusLabel, Row(0), Column(2), Sticky("e"))
 
 	GridColumnConfigure(statusFrame, 0, Weight(1))
 	GridColumnConfigure(statusFrame, 1, Weight(0))
+	GridColumnConfigure(statusFrame, 2, Weight(1))
 }
 
 func setupTextChangeTracking() {
@@ -645,6 +680,144 @@ func handlePaste() {
 
 func handleSelectAll() {
 	app.textWidget.SelectAll()
+}
+
+func handleFindFocus() {
+	if app.findEntry != nil {
+		Focus(app.findEntry)
+	}
+}
+
+func handleFindNext(fromStart bool) {
+	if app.findEntry == nil || app.textWidget == nil {
+		return
+	}
+
+	searchText := app.findEntry.Textvariable()
+	if searchText == "" {
+		return
+	}
+
+	// Get the full text content
+	contentParts := app.textWidget.Get("1.0", "end-1c")
+	content := ""
+	if len(contentParts) > 0 {
+		content = contentParts[0]
+	}
+
+	// Convert both to lowercase for case-insensitive search
+	contentLower := strings.ToLower(content)
+	searchLower := strings.ToLower(searchText)
+
+	// Determine start position for search
+	var startCharIndex int
+	if fromStart {
+		startCharIndex = 0
+	} else {
+		// Get current cursor position and convert to character index
+		insertIndex := app.textWidget.Index("insert")
+		startCharIndex = textIndexToCharIndex(content, insertIndex) + 1
+	}
+
+	// Search for the text starting from startCharIndex
+	foundPos := strings.Index(contentLower[startCharIndex:], searchLower)
+
+	if foundPos == -1 {
+		if fromStart {
+			// Already searched from start, text not found
+			MessageBox(Icon("info"), Title("Find"), Msg(fmt.Sprintf("Cannot find \"%s\"", searchText)))
+		} else {
+			// Ask if user wants to wrap around
+			response := MessageBox(
+				Icon("question"),
+				Title("Find"),
+				Msg(fmt.Sprintf("Cannot find \"%s\" from current position.\n\nDo you want to search from the beginning?", searchText)),
+				Type("yesno"),
+			)
+			if response == "yes" {
+				handleFindNext(true)
+			}
+		}
+		return
+	}
+
+	// Calculate actual position in original text
+	actualPos := startCharIndex + foundPos
+
+	// Convert character index to Tk text index (line.column)
+	startIndex := charIndexToTextIndex(content, actualPos)
+	endIndex := charIndexToTextIndex(content, actualPos+len(searchText))
+
+	// Remove any existing selection
+	app.textWidget.TagRemove("sel", "1.0", "end")
+
+	// Move cursor to the found position and select the text
+	app.textWidget.MarkSet("insert", startIndex)
+	app.textWidget.TagAdd("sel", startIndex, endIndex)
+
+	// Make sure the found text is visible
+	app.textWidget.See(startIndex)
+
+	// Focus back to text widget
+	//Focus(app.textWidget)
+
+	// Update status bar
+	updateStatusBar()
+}
+
+// textIndexToCharIndex converts a Tk text index (line.column) to a character index
+func textIndexToCharIndex(content string, tkIndex string) int {
+	parts := strings.Split(tkIndex, ".")
+	if len(parts) != 2 {
+		return 0
+	}
+
+	var line, col int
+	fmt.Sscanf(parts[0], "%d", &line)
+	fmt.Sscanf(parts[1], "%d", &col)
+
+	// Count characters up to the specified line
+	charIndex := 0
+	currentLine := 1
+	for i, ch := range content {
+		if currentLine == line {
+			return charIndex + col
+		}
+		if ch == '\n' {
+			currentLine++
+		}
+		charIndex = i + 1
+	}
+
+	// If we're at the target line, add the column offset
+	if currentLine == line {
+		return charIndex + col
+	}
+
+	return charIndex
+}
+
+// charIndexToTextIndex converts a character index to a Tk text index (line.column)
+func charIndexToTextIndex(content string, charIndex int) string {
+	if charIndex < 0 {
+		charIndex = 0
+	}
+	if charIndex > len(content) {
+		charIndex = len(content)
+	}
+
+	line := 1
+	col := 0
+	for i := 0; i < charIndex && i < len(content); i++ {
+		if content[i] == '\n' {
+			line++
+			col = 0
+		} else {
+			col++
+		}
+	}
+
+	return fmt.Sprintf("%d.%d", line, col)
 }
 
 // View operations
