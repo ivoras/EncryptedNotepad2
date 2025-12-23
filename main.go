@@ -33,7 +33,7 @@ func main() {
 	// Set window title and size
 	App.WmTitle(AppName)
 	ActivateTheme("azure light")
-	App.Configure(Width("80c"), Height("50c"))
+	App.Configure(Width("80c"), Height("50c"), Background("SystemButtonFace"))
 
 	// Set application icon
 	appIcon := NewPhoto(File("Icon.png"))
@@ -205,7 +205,7 @@ func createTextEditor(parent *TFrameWidget) {
 	app.hscroll = textFrame.TScrollbar(Orient("horizontal"))
 	// Don't grid the horizontal scrollbar initially - word wrap is enabled by default
 
-	// Create text widget with white background (like input boxes)
+	// Create text widget
 	// Link scrollbars bidirectionally:
 	// - Yscrollcommand/Xscrollcommand: text widget updates scrollbar position
 	// - Scrollbar Command: scrollbar controls text widget view
@@ -213,13 +213,15 @@ func createTextEditor(parent *TFrameWidget) {
 		Wrap("word"),
 		Undo(true),
 		Font("TkFixedFont"),
-		Background("white"),
 		Width(80),
 		Height(25),
 		Yscrollcommand(func(e *Event) { e.ScrollSet(vscroll) }),
 		Xscrollcommand(func(e *Event) { e.ScrollSet(app.hscroll) }),
 	)
 	Grid(app.textWidget, Row(0), Column(0), Sticky("nsew"))
+
+	// Set white background (like input boxes) - configure after creation to override theme
+	app.textWidget.Configure(Background("#ffffff"))
 
 	// Connect scrollbars to control text widget scrolling
 	vscroll.Configure(Command(func(e *Event) { e.Yview(app.textWidget) }))
@@ -232,6 +234,7 @@ func createTextEditor(parent *TFrameWidget) {
 
 func createStatusBar() {
 	statusFrame := TFrame(Padding("2 2 2 2"))
+
 	Grid(statusFrame, Row(2), Column(0), Sticky("ew"))
 
 	// Left side - modified indicator and filename
@@ -488,6 +491,7 @@ func askPassword(title, message string, confirm bool) string {
 	// Create a toplevel dialog
 	dialog := Toplevel()
 	dialog.WmTitle(title)
+	dialog.Configure(Background("SystemButtonFace"))
 	WmTransient(dialog, App)
 	dialog.SetResizable(false, false)
 
