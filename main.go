@@ -254,7 +254,7 @@ func createTextEditor(parent *TFrameWidget) {
 }
 
 func createStatusBar() {
-	statusFrame := TFrame(Padding("4 2 4 2"))
+	statusFrame := TFrame(Padding("4 2 6 2"))
 
 	Grid(statusFrame, Row(2), Column(0), Sticky("ew"))
 
