@@ -17,12 +17,14 @@ const (
 
 // AppState holds the application state
 type AppState struct {
-	currentFile string
-	password    string
-	modified    bool
-	textWidget  *TextWidget
-	statusLabel *TLabelWidget
-	leftLabel   *TLabelWidget
+	currentFile     string
+	password        string
+	modified        bool
+	wordWrapEnabled bool
+	textWidget      *TextWidget
+	hscroll         *TScrollbarWidget
+	statusLabel     *TLabelWidget
+	leftLabel       *TLabelWidget
 }
 
 var app AppState
@@ -88,6 +90,7 @@ func createToolbar() {
 	iconCopy := NewPhoto(File("icons/copy.svg"))
 	iconPaste := NewPhoto(File("icons/paste.svg"))
 	iconSelectAll := NewPhoto(File("icons/select-all.svg"))
+	iconWordWrap := NewPhoto(File("icons/word-wrap.svg"))
 	iconAbout := NewPhoto(File("icons/about.svg"))
 	iconExit := NewPhoto(File("icons/exit.svg"))
 
@@ -141,14 +144,36 @@ func createToolbar() {
 	Grid(sep2, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
 	col++
 
+	// === View Section ===
+	// Word wrap toggle button (default: enabled)
+	wordWrapVar := Variable(true)
+	app.wordWrapEnabled = true
+	wordWrapBtn := toolbar.TCheckbutton(
+		Image(iconWordWrap),
+		Style("Toolbutton"),
+		Variable(wordWrapVar),
+		Command(func() {
+			app.wordWrapEnabled = !app.wordWrapEnabled
+			handleWordWrapToggle()
+		}),
+	)
+	wordWrapBtn.WidgetState("selected") // Start selected (word wrap enabled)
+	Grid(wordWrapBtn, Row(0), Column(col), Padx("2"))
+	col++
+
+	// Separator
+	sep3 := toolbar.TSeparator(Orient("vertical"))
+	Grid(sep3, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
+	col++
+
 	// === Help Section ===
 	aboutBtn := toolbar.TButton(Image(iconAbout), Style("Toolbutton.TButton"), Command(handleAbout))
 	Grid(aboutBtn, Row(0), Column(col), Padx("2"))
 	col++
 
 	// Separator before Exit
-	sep3 := toolbar.TSeparator(Orient("vertical"))
-	Grid(sep3, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
+	sep4 := toolbar.TSeparator(Orient("vertical"))
+	Grid(sep4, Row(0), Column(col), Sticky("ns"), Padx("8 8"))
 	col++
 
 	// Exit button
@@ -176,9 +201,9 @@ func createTextEditor(parent *TFrameWidget) {
 	vscroll := textFrame.TScrollbar(Orient("vertical"))
 	Grid(vscroll, Row(0), Column(1), Sticky("ns"))
 
-	// Create horizontal scrollbar
-	hscroll := textFrame.TScrollbar(Orient("horizontal"))
-	Grid(hscroll, Row(1), Column(0), Sticky("ew"))
+	// Create horizontal scrollbar (stored in app for toggling visibility)
+	app.hscroll = textFrame.TScrollbar(Orient("horizontal"))
+	// Don't grid the horizontal scrollbar initially - word wrap is enabled by default
 
 	// Create text widget with white background (like input boxes)
 	// Link scrollbars bidirectionally:
@@ -192,13 +217,13 @@ func createTextEditor(parent *TFrameWidget) {
 		Width(80),
 		Height(25),
 		Yscrollcommand(func(e *Event) { e.ScrollSet(vscroll) }),
-		Xscrollcommand(func(e *Event) { e.ScrollSet(hscroll) }),
+		Xscrollcommand(func(e *Event) { e.ScrollSet(app.hscroll) }),
 	)
 	Grid(app.textWidget, Row(0), Column(0), Sticky("nsew"))
 
 	// Connect scrollbars to control text widget scrolling
 	vscroll.Configure(Command(func(e *Event) { e.Yview(app.textWidget) }))
-	hscroll.Configure(Command(func(e *Event) { e.Xview(app.textWidget) }))
+	app.hscroll.Configure(Command(func(e *Event) { e.Xview(app.textWidget) }))
 
 	// Configure grid weights for text frame
 	GridColumnConfigure(textFrame, 0, Weight(1))
@@ -466,9 +491,6 @@ func askPassword(title, message string, confirm bool) string {
 	WmTransient(dialog, App)
 	dialog.SetResizable(false, false)
 
-	// Center the dialog relative to main window
-	WmGeometry(dialog.Window, "+400+300")
-
 	var result string
 
 	// Main frame
@@ -548,6 +570,9 @@ func askPassword(title, message string, confirm bool) string {
 		Destroy(dialog)
 	}))
 
+	// Center the dialog on screen
+	dialog.Center()
+
 	// Focus the password entry
 	Focus(passwordText)
 
@@ -596,6 +621,20 @@ func handlePaste() {
 
 func handleSelectAll() {
 	app.textWidget.SelectAll()
+}
+
+// View operations
+
+func handleWordWrapToggle() {
+	if app.wordWrapEnabled {
+		// Enable word wrap, hide horizontal scrollbar
+		app.textWidget.Configure(Wrap("word"))
+		GridForget(app.hscroll.Window)
+	} else {
+		// Disable word wrap, show horizontal scrollbar
+		app.textWidget.Configure(Wrap("none"))
+		Grid(app.hscroll, Row(1), Column(0), Sticky("ew"))
+	}
 }
 
 // About dialog
