@@ -1,7 +1,7 @@
 VERSION=0.4
 BUILDNO=7
 
-all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepad2.apk dist/android/EncryptedNotepad2.aab 
+all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepad2.apk dist/android/EncryptedNotepad2.aab
 	true
 
 clean:
@@ -20,7 +20,7 @@ dist/windows:
 	mkdir -p dist/windows
 
 dist/windows/EncryptedNotepad2.exe: *.go
-	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc fyne package -os windows -icon Icon.png -release -app-id com.encryptednotepad2 && mkdir -p dist/windows && mv EncryptedNotepad2.exe dist/windows/
+	GOOS=windows GOARCH=amd64 go build && mkdir -p dist/windows && mv EncryptedNotepad2.exe dist/windows/
 
 dist/android:
 	mkdir -p dist/android

@@ -22,6 +22,7 @@ const (
 const (
 	pgpMessageHeader = "-----BEGIN PGP MESSAGE-----"
 	statusTextFormat = "Ln %s, Col %s | Lines: %s"
+	defaultFontName  = "{Segoe UI} 9"
 )
 
 // AppState holds the application state
@@ -50,9 +51,9 @@ func main() {
 	App.IconPhoto(appIcon)
 
 	// Configure default app font (in order of preference)
-	StyleConfigure(".", Font("{Segoe UI} 9"))
-	StyleConfigure("TButton", Font("{Segoe UI} 9"))
-	StyleConfigure("TLabel", Font("{Segoe UI} 9"))
+	StyleConfigure(".", Font(defaultFontName))
+	StyleConfigure("TButton", Font(defaultFontName))
+	StyleConfigure("TLabel", Font(defaultFontName))
 
 	// Create toolbar
 	createToolbar()
@@ -285,7 +286,7 @@ func createStatusBar() {
 	Grid(app.leftLabel, Row(0), Column(0), Sticky("w"))
 
 	// Center - Find edit box with placeholder
-	app.findEntry = statusFrame.TEntry(Width(25), Font("{Segoe UI} 9"), Textvariable(""), Placeholder("Find..."))
+	app.findEntry = statusFrame.TEntry(Width(25), Font(defaultFontName), Textvariable(""), Placeholder("Find..."))
 	Grid(app.findEntry, Row(0), Column(1))
 
 	// Bind Enter key to perform search when find entry is focused
@@ -580,7 +581,7 @@ func askPassword(title, message string, confirm bool) string {
 	// Password entry using TEntry with masking
 	pwdLabel := frame.TLabel(Txt("Password:"))
 	Grid(pwdLabel, Row(1), Column(0), Sticky("e"), Padx("0 10"))
-	passwordEntry := frame.TEntry(Width(30), Show("*"), Font("{Segoe UI} 9"), Textvariable(""))
+	passwordEntry := frame.TEntry(Width(30), Show("*"), Font(defaultFontName), Textvariable(""))
 	Grid(passwordEntry, Row(1), Column(1), Sticky("w"))
 
 	// Confirm password entry (if needed)
@@ -588,7 +589,7 @@ func askPassword(title, message string, confirm bool) string {
 	if confirm {
 		confirmLabel := frame.TLabel(Txt("Confirm Password:"))
 		Grid(confirmLabel, Row(2), Column(0), Sticky("e"), Padx("0 10"), Pady("5 0"))
-		confirmEntry = frame.TEntry(Width(30), Show("*"), Font("{Segoe UI} 9"), Textvariable(""))
+		confirmEntry = frame.TEntry(Width(30), Show("*"), Font(defaultFontName), Textvariable(""))
 		Grid(confirmEntry, Row(2), Column(1), Sticky("w"), Pady("5 0"))
 	}
 
