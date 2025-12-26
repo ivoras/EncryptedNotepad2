@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	. "modernc.org/tk9.0"
@@ -38,12 +39,16 @@ type AppState struct {
 }
 
 var app AppState
+var colorSystemButtonFace = "SystemButtonFace"
 
 func main() {
+	if runtime.GOOS == "linux" {
+		colorSystemButtonFace = "GhostWhite"
+	}
 	// Set window title and size
 	App.WmTitle(fmt.Sprintf("%s v%s", AppName, AppVersion))
 	ActivateTheme("azure light")
-	App.Configure(Width("80c"), Height("50c"), Background("SystemButtonFace"))
+	App.Configure(Width("80c"), Height("50c"), Background(colorSystemButtonFace))
 
 	// Set application icon (embedded in executable)
 	appIcon := NewPhoto(Data(appIconData))
@@ -91,8 +96,8 @@ func createToolbar() {
 	// Configure flat toolbar button style (transparent background)
 	StyleConfigure("Toolbutton.TButton", Relief("flat"), Borderwidth(0), Padding("4"))
 	// Configure TFrame and TLabel background to match system
-	StyleConfigure("TFrame", Background("SystemButtonFace"))
-	StyleConfigure("TLabel", Background("SystemButtonFace"))
+	StyleConfigure("TFrame", Background(colorSystemButtonFace))
+	StyleConfigure("TLabel", Background(colorSystemButtonFace))
 
 	// Load icons
 	iconNew := NewPhoto(File("icons/new.svg"))
@@ -563,7 +568,7 @@ func askPassword(title, message string, confirm bool) string {
 	// Create a toplevel dialog
 	dialog := Toplevel()
 	dialog.WmTitle(title)
-	dialog.Configure(Background("SystemButtonFace"))
+	dialog.Configure(Background(colorSystemButtonFace))
 	WmTransient(dialog, App)
 	dialog.SetResizable(false, false)
 
