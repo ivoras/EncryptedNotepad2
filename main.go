@@ -15,6 +15,42 @@ import (
 //go:embed Icon.png
 var appIconData []byte
 
+//go:embed icons/new.svg
+var iconNewData []byte
+
+//go:embed icons/open.svg
+var iconOpenData []byte
+
+//go:embed icons/save.svg
+var iconSaveData []byte
+
+//go:embed icons/save-as.svg
+var iconSaveAsData []byte
+
+//go:embed icons/cut.svg
+var iconCutData []byte
+
+//go:embed icons/copy.svg
+var iconCopyData []byte
+
+//go:embed icons/paste.svg
+var iconPasteData []byte
+
+//go:embed icons/select-all.svg
+var iconSelectAllData []byte
+
+//go:embed icons/search.svg
+var iconSearchData []byte
+
+//go:embed icons/word-wrap.svg
+var iconWordWrapData []byte
+
+//go:embed icons/about.svg
+var iconAboutData []byte
+
+//go:embed icons/exit.svg
+var iconExitData []byte
+
 const (
 	AppName    = "Encrypted Notepad 2"
 	AppVersion = "0.5"
@@ -100,19 +136,19 @@ func createToolbar() {
 	StyleConfigure("TFrame", Background(colorSystemButtonFace))
 	StyleConfigure("TLabel", Background(colorSystemButtonFace))
 
-	// Load icons
-	iconNew := NewPhoto(File("icons/new.svg"))
-	iconOpen := NewPhoto(File("icons/open.svg"))
-	iconSave := NewPhoto(File("icons/save.svg"))
-	iconSaveAs := NewPhoto(File("icons/save-as.svg"))
-	iconCut := NewPhoto(File("icons/cut.svg"))
-	iconCopy := NewPhoto(File("icons/copy.svg"))
-	iconPaste := NewPhoto(File("icons/paste.svg"))
-	iconSelectAll := NewPhoto(File("icons/select-all.svg"))
-	iconFind := NewPhoto(File("icons/search.svg"))
-	iconWordWrap := NewPhoto(File("icons/word-wrap.svg"))
-	iconAbout := NewPhoto(File("icons/about.svg"))
-	iconExit := NewPhoto(File("icons/exit.svg"))
+	// Load icons (embedded in executable)
+	iconNew := NewPhoto(Data(iconNewData))
+	iconOpen := NewPhoto(Data(iconOpenData))
+	iconSave := NewPhoto(Data(iconSaveData))
+	iconSaveAs := NewPhoto(Data(iconSaveAsData))
+	iconCut := NewPhoto(Data(iconCutData))
+	iconCopy := NewPhoto(Data(iconCopyData))
+	iconPaste := NewPhoto(Data(iconPasteData))
+	iconSelectAll := NewPhoto(Data(iconSelectAllData))
+	iconFind := NewPhoto(Data(iconSearchData))
+	iconWordWrap := NewPhoto(Data(iconWordWrapData))
+	iconAbout := NewPhoto(Data(iconAboutData))
+	iconExit := NewPhoto(Data(iconExitData))
 
 	// Create outer toolbar container (full width, for centering)
 	toolbarContainer := TFrame(Padding("2 2 2 8"))
