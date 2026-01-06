@@ -1,7 +1,7 @@
-VERSION=0.4
-BUILDNO=7
+VERSION=0.5
+BUILDNO=8
 
-all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64/EncryptedNotepad2.tar.xz dist/windows/EncryptedNotepad2.exe dist/android/EncryptedNotepad2.apk dist/android/EncryptedNotepad2.aab
+all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64 dist/linux_x64/EncryptedNotepad.tgz
 	true
 
 clean:
@@ -13,24 +13,6 @@ dist:
 dist/linux_x64:
 	mkdir -p dist/linux_x64
 
-dist/linux_x64/EncryptedNotepad2.tar.xz: *.go
-	fyne package -os linux -icon Icon.png -tags osusergo,netgo -release && mkdir -p dist/linux_x64 && mv EncryptedNotepad2.tar.xz dist/linux_x64/
-
-dist/windows:
-	mkdir -p dist/windows
-
-dist/windows/EncryptedNotepad2.exe: *.go
-	GOOS=windows GOARCH=amd64 go build && mkdir -p dist/windows && mv EncryptedNotepad2.exe dist/windows/
-
-dist/android:
-	mkdir -p dist/android
-
-dist/android/EncryptedNotepad2.aab: *.go dist/android
-	rm -f EncryptedNotepad2.aab ; fyne release -os android/arm64 --app-id com.encryptednotepad2 --icon Icon.png --app-version $(VERSION) --app-build $(BUILDNO) --key-store en2.keystore --key-name en2 && mkdir -p dist/android && mv EncryptedNotepad2.aab dist/android/
-
-dist/android/EncryptedNotepad2.apk: *.go dist/android
-	rm -f EncryptedNotepad2.apk ; fyne package -os android/arm64 --app-id com.encryptednotepad2 --icon Icon.png ; mv EncryptedNotepad2.apk dist/android/
-
 dist/Icon.png: Icon.png
 	cp Icon.png dist/
 
@@ -40,3 +22,13 @@ dist/README.html: README.md
 
 dist/screenshot.png: screenshot.png
 	cp screenshot.png dist/
+
+dist/linux_x64/EncryptedNotepad.tgz: EncryptedNotepad Linux/install_linux.sh Linux/EncryptedNotepad.desktop Icon.png
+	mkdir -p build/linux_x64
+	cp EncryptedNotepad build/linux_x64/
+	cp Linux/install_linux.sh build/linux_x64/
+	cp Linux/EncryptedNotepad.desktop build/linux_x64/
+	cp Icon.png build/linux_x64/
+	cd build/linux_x64 && tar -czvf ../EncryptedNotepad_Linux.tgz * && cd ../..
+	mv build/linux_x64/EncryptedNotepad_Linux.tgz dist/
+	rm -rf build/linux_x64
