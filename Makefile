@@ -20,7 +20,7 @@ dist/windows:
 	mkdir -p dist/windows
 
 dist/windows/EncryptedNotepad2.exe: *.go
-	GOOS=windows GOARCH=amd64 go build && mkdir -p dist/windows && mv EncryptedNotepad2.exe dist/windows/
+	GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui && mkdir -p dist/windows && mv EncryptedNotepad2.exe dist/windows/
 
 dist/android:
 	mkdir -p dist/android
