@@ -7,6 +7,9 @@ all: dist dist/README.html dist/screenshot.png dist/Icon.png dist/linux_x64 dist
 clean:
 	rm -rf dist
 
+EncryptedNotepad: *.go
+	go build
+
 dist:
 	mkdir -p dist
 
