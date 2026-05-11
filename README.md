@@ -83,3 +83,15 @@ This one isn't new - the old version was written in Java, and that means it requ
 
 * v0.5 - Rewritten the desktop app with the TK UI, rewritten the Android app to be native
 * v0.4 - If the filename isn't given a file extension while saving, the default ".asc" extension will be used.
+
+# Stargazing
+
+## Star History
+
+<a href="https://www.star-history.com/?type=date&repos=ivoras%2FEncryptedNotepad2">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ivoras/EncryptedNotepad2&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ivoras/EncryptedNotepad2&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ivoras/EncryptedNotepad2&type=date&legend=top-left" />
+ </picture>
+</a>
